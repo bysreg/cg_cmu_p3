@@ -57,5 +57,6 @@ bool Texture::load(){
 
 Color3 Texture::sample(Vector2 coord) const{
     assert(false);
+	return Color3();
 }
 }

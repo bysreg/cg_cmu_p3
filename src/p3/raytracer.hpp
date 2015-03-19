@@ -34,7 +34,7 @@ public:
 
     bool initialize(Scene* scene, size_t num_samples,
                     size_t width, size_t height);
-    Color3 trace_ray(Ray &ray/*more args*/);
+    Color3 trace_ray(const Ray &ray/*more args*/);
     
     bool raytrace(unsigned char* buffer, real_t* max_time);
     

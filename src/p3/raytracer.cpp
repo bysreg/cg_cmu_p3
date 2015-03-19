@@ -52,8 +52,9 @@ bool Raytracer::initialize(Scene* scene, size_t num_samples,
     photonMap.initialize(scene);
     return true;
 }
+
 //compute ambient lighting
-Color3 Raytracer::trace_ray(Ray &ray/*maybe some more arguments*/){
+Color3 Raytracer::trace_ray(const Ray &ray/*maybe some more arguments*/){
     //TODO: render something more interesting
     return Color3(fabs(sin(10*ray.d.x)),fabs(10*cos(ray.d.y)),fabs(10*tan(ray.d.y)));
 }
@@ -152,7 +153,11 @@ bool Raytracer::raytrace(unsigned char* buffer, real_t* max_time)
             
         // This tells OpenMP that this loop can be parallelized.
 #pragma omp parallel for schedule(dynamic, CHUNK_SIZE)
-            for (size_t x = 0; x < width; x++)
+#ifdef WIN32
+            for (long x = 0; x < width; x++)
+#else
+			for (size_t x = 0; x < width; x++)
+#endif
             {
                 // trace a pixel
                 Color3 color = trace_pixel(x, c_row, width, height);
