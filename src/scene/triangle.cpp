@@ -64,4 +64,11 @@ void Triangle::render() const
     if ( materials_nonnull )
         vertices[0].material->reset_gl_state();
 }
+
+bool Triangle::is_intersect_with_ray(const Ray& ray) const
+{
+	//TODO
+	return false;
+}
+
 } /* _462 */

@@ -39,6 +39,7 @@ public:
     Triangle();
     virtual ~Triangle();
     virtual void render() const;
+	virtual bool is_intersect_with_ray(const Ray& ray) const;
 };
 
 

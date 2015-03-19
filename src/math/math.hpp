@@ -47,6 +47,10 @@ inline T clamp( T val, T min, T max )
     return std::min( max, std::max( min, (T)pow((double)val,GAMMA) ) );
 }
 
+inline real_t pow(real_t base, real_t exponent)
+{
+	return std::pow(base, exponent);
+}
 
 } /* _462 */
 

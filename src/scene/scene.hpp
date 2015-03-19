@@ -65,6 +65,8 @@ public:
     virtual void render() const = 0;
 
     virtual bool initialize();
+
+	virtual bool is_intersect_with_ray(const Ray& ray) const = 0;
 };
 
 

@@ -56,7 +56,17 @@ bool Raytracer::initialize(Scene* scene, size_t num_samples,
 //compute ambient lighting
 Color3 Raytracer::trace_ray(const Ray &ray/*maybe some more arguments*/){
     //TODO: render something more interesting
-    return Color3(fabs(sin(10*ray.d.x)),fabs(10*cos(ray.d.y)),fabs(10*tan(ray.d.y)));
+    //return Color3(fabs(sin(10*ray.d.x)),fabs(10*cos(ray.d.y)),fabs(10*tan(ray.d.y)));	
+	Geometry* const* geometries = scene->get_geometries();
+	for (size_t i = 0; i < scene->num_geometries(); ++i)
+	{
+		if (geometries[i]->is_intersect_with_ray(ray))
+		{
+			return Color3(0, 0, 0);
+		}
+	}
+
+	return Color3(1, 1, 1);
 }
 
 /**
@@ -114,7 +124,6 @@ Color3 Raytracer::trace_pixel(size_t x,
  */
 bool Raytracer::raytrace(unsigned char* buffer, real_t* max_time)
 {
-    
     static const size_t PRINT_INTERVAL = 64;
 
     // the time in milliseconds that we should stop

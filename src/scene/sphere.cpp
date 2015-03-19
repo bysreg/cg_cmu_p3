@@ -112,6 +112,7 @@ bool solve_quadratic(real_t *x1,real_t *x2, real_t a, real_t b, real_t c){
         return true;
     }
 }
+
 //solve a quadratic equation, and then return the smallest solution larger than EPS
 //if there is no solution, return -1
 real_t solve_time(real_t a,real_t b,real_t c){
@@ -126,7 +127,19 @@ real_t solve_time(real_t a,real_t b,real_t c){
             return x2;
         }
     }
+
     return -1;
 }
+
+bool Sphere::is_intersect_with_ray(const Ray& ray) const
+{
+	Vector3 e_min_c = ray.e - position;
+	real_t B = dot(2 * ray.d, e_min_c);
+	real_t A = dot(ray.d, ray.d);
+	real_t C = dot(e_min_c, e_min_c) - pow(radius, 2);
+
+	return (pow(B, 2) - 4 * A*C) >= 0;
+}
+
 } /* _462 */
 

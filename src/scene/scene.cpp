@@ -20,7 +20,6 @@ Geometry::Geometry():
 
 Geometry::~Geometry() { }
 
-
 bool Geometry::initialize()
 {
     make_inverse_transformation_matrix(&invMat, position, orientation, scale);
@@ -28,6 +27,7 @@ bool Geometry::initialize()
     make_normal_matrix(&normMat, mat);
     return true;
 }
+
 SphereLight::SphereLight():
     position(Vector3::Zero()),
     color(Color3::White()),

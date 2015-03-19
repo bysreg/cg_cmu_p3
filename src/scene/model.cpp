@@ -37,4 +37,10 @@ bool Model::initialize(){
     return true;
 }
 
+bool Model::is_intersect_with_ray(const Ray& ray) const
+{
+	//TODO
+	return false;
+}
+
 } /* _462 */
