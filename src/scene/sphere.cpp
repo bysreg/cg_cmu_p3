@@ -133,10 +133,10 @@ real_t solve_time(real_t a,real_t b,real_t c){
 
 bool Sphere::is_intersect_with_ray(const Ray& ray, float& t_max) const
 {
-	Vector3 e = ray.e;
-	Vector3 d = ray.d;
+	Vector3 e = invMat.transform_point(ray.e);
+	Vector3 d = invMat.transform_vector(ray.d);	
 
-	Vector3 e_min_c = e - position;
+	Vector3 e_min_c = e/* - position*/; // no need to substract with position, because we test the intersection in local space
 	real_t B = 2*dot(d, e_min_c);
 	real_t A = dot(d, d);
 	real_t C = dot(e_min_c, e_min_c) - (radius * radius);
