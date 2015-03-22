@@ -21,6 +21,17 @@ Triangle::Triangle()
 
 Triangle::~Triangle() { }
 
+bool Triangle::initialize() 
+{
+	Geometry::initialize();
+
+	world_position[0] = mat.transform_point(vertices[0].position);
+	world_position[1] = mat.transform_point(vertices[1].position);
+	world_position[2] = mat.transform_point(vertices[2].position);
+
+	return true;
+}
+
 void Triangle::render() const
 {
     bool materials_nonnull = true;
@@ -67,8 +78,46 @@ void Triangle::render() const
 
 bool Triangle::is_intersect_with_ray(const Ray& ray) const
 {
-	//TODO
-	return false;
+	float a = world_position[0].x - world_position[1].x;
+	float b = world_position[0].y - world_position[1].y;
+	float c = world_position[0].z - world_position[1].z;
+	float d = world_position[0].x - world_position[2].x;
+	float e = world_position[0].y - world_position[2].y;
+	float f = world_position[0].z - world_position[2].z;;
+	float g = ray.d.x;
+	float h = ray.d.y;
+	float i = ray.d.z;
+	float j = world_position[0].x - ray.e.x;
+	float k = world_position[0].y - ray.e.y;
+	float l = world_position[0].z - ray.e.z;
+	float ei_min_hf = e*i - h*f;
+	float gf_min_di = g*f - d*i;
+	float dh_min_eg = d*h - e*g;
+	
+	float M = a*(ei_min_hf)+b*(gf_min_di)+c*(dh_min_eg);
+	
+	//compute t
+	float ak_min_jb = a*k - j*b;
+	float jc_min_al = j*c - a*l;
+	float bl_min_kc = b*l - k*c;
+	float t = (f*(ak_min_jb)+e*(jc_min_al)+d*(bl_min_kc)) / -M;
+	
+	if (t < 0) // should be t < to || t > t1
+		return false;
+
+	//compute gamma
+	float gamma = (i*(ak_min_jb)+h*(jc_min_al)+g*(bl_min_kc)) / M;
+
+	if (gamma < 0 || gamma > 1)
+		return false;
+
+	//compute beta
+	float beta = (j*(ei_min_hf)+k*(gf_min_di)+l*(dh_min_eg)) / M;
+
+	if (beta < 0 || beta + gamma > 1)
+		return false;
+
+	return true;
 }
 
 } /* _462 */

@@ -54,9 +54,7 @@ bool Raytracer::initialize(Scene* scene, size_t num_samples,
 }
 
 //compute ambient lighting
-Color3 Raytracer::trace_ray(const Ray &ray/*maybe some more arguments*/){
-    //TODO: render something more interesting
-    //return Color3(fabs(sin(10*ray.d.x)),fabs(10*cos(ray.d.y)),fabs(10*tan(ray.d.y)));	
+Color3 Raytracer::trace_ray(const Ray &ray/*maybe some more arguments*/){        
 	Geometry* const* geometries = scene->get_geometries();
 	for (size_t i = 0; i < scene->num_geometries(); ++i)
 	{

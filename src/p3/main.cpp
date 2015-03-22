@@ -427,6 +427,7 @@ void RaytracerApplication::render_scene(const Scene& scene)
 
         glPushMatrix();
 
+		//TODO : should i change this to only glMultMatrix with the geom's transformation matrix
         glTranslated(geom.position.x, geom.position.y, geom.position.z);
         geom.orientation.to_axis_angle(&axis, &angle);
         glRotated(angle*(180.0/PI), axis.x, axis.y, axis.z);
