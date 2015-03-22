@@ -66,7 +66,7 @@ public:
 
     virtual bool initialize();
 
-	virtual bool is_intersect_with_ray(const Ray& ray) const = 0;
+	virtual bool is_intersect_with_ray(const Ray& ray, float& t) const = 0;
 };
 
 

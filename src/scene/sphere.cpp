@@ -131,13 +131,13 @@ real_t solve_time(real_t a,real_t b,real_t c){
     return -1;
 }
 
-bool Sphere::is_intersect_with_ray(const Ray& ray) const
+bool Sphere::is_intersect_with_ray(const Ray& ray, float& t_max) const
 {
 	Vector3 e = ray.e;
 	Vector3 d = ray.d;
 
 	Vector3 e_min_c = e - position;
-	real_t B = 2* dot(d, e_min_c);
+	real_t B = 2*dot(d, e_min_c);
 	real_t A = dot(d, d);
 	real_t C = dot(e_min_c, e_min_c) - (radius * radius);
 
@@ -146,16 +146,24 @@ bool Sphere::is_intersect_with_ray(const Ray& ray) const
 	if (determinant < 0)
 		return false;
 	
+	//determinant is >= 0
+
 	//check the first root
 	float sqrt_determinant = sqrt(determinant);
 	float t1 = (-B + sqrt_determinant) / 2 * A;
-	if (t1 > 0)
+	if (t1 > 0 && t1 < t_max)
+	{
+		t_max = t1;
 		return true;
+	}
 
 	//check the second root
 	float t2 = (-B - sqrt_determinant) / 2 * A;
-	if (t2 > 0)
+	if (t2 > 0 && t2 < t_max)
+	{
+		t_max = t2;
 		return true;
+	}
 
 	return false;
 }

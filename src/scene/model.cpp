@@ -37,9 +37,19 @@ bool Model::initialize(){
     return true;
 }
 
-bool Model::is_intersect_with_ray(const Ray& ray) const
+bool Model::is_intersect_with_ray(const Ray& ray, float& t_max) const
 {
-	//TODO
+	Ray local_ray(invMat.transform_point(ray.e), invMat.transform_vector(ray.d));
+
+	for (int i = 0; i < mesh->num_triangles(); i++)
+	{
+		const Vector3& p1 = mesh->vertices[mesh->triangles[i].vertices[0]].position;
+		const Vector3& p2 = mesh->vertices[mesh->triangles[i].vertices[1]].position;
+		const Vector3& p3 = mesh->vertices[mesh->triangles[i].vertices[2]].position;
+		if (Triangle::is_ray_triangle_intersect(local_ray, p1, p2, p3, t_max))
+			return true;		
+	}
+
 	return false;
 }
 

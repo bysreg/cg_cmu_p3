@@ -36,13 +36,15 @@ public:
     // the triangle's vertices, in CCW order
     Vertex vertices[3];
 
-	Vector3 world_position[3];
+	Vector3 world_position[3]; // the position of the vertices in world coordinate
 
     Triangle();
     virtual ~Triangle();
     virtual void render() const;
 	virtual bool initialize();
-	virtual bool is_intersect_with_ray(const Ray& ray) const;
+	virtual bool is_intersect_with_ray(const Ray& ray, float& t_max) const;
+
+	static bool is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, float& t_max);
 };
 
 

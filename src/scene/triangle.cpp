@@ -76,33 +76,33 @@ void Triangle::render() const
         vertices[0].material->reset_gl_state();
 }
 
-bool Triangle::is_intersect_with_ray(const Ray& ray) const
+bool Triangle::is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, float& t_max)
 {
-	float a = world_position[0].x - world_position[1].x;
-	float b = world_position[0].y - world_position[1].y;
-	float c = world_position[0].z - world_position[1].z;
-	float d = world_position[0].x - world_position[2].x;
-	float e = world_position[0].y - world_position[2].y;
-	float f = world_position[0].z - world_position[2].z;;
+	float a = p1.x - p2.x;
+	float b = p1.y - p2.y;
+	float c = p1.z - p2.z;
+	float d = p1.x - p3.x;
+	float e = p1.y - p3.y;
+	float f = p1.z - p3.z;;
 	float g = ray.d.x;
 	float h = ray.d.y;
 	float i = ray.d.z;
-	float j = world_position[0].x - ray.e.x;
-	float k = world_position[0].y - ray.e.y;
-	float l = world_position[0].z - ray.e.z;
+	float j = p1.x - ray.e.x;
+	float k = p1.y - ray.e.y;
+	float l = p1.z - ray.e.z;
 	float ei_min_hf = e*i - h*f;
 	float gf_min_di = g*f - d*i;
 	float dh_min_eg = d*h - e*g;
-	
+
 	float M = a*(ei_min_hf)+b*(gf_min_di)+c*(dh_min_eg);
-	
+
 	//compute t
 	float ak_min_jb = a*k - j*b;
 	float jc_min_al = j*c - a*l;
 	float bl_min_kc = b*l - k*c;
 	float t = (f*(ak_min_jb)+e*(jc_min_al)+d*(bl_min_kc)) / -M;
-	
-	if (t < 0) // should be t < to || t > t1
+
+	if (t < 0 || t > t_max) // should be t < to || t > t1
 		return false;
 
 	//compute gamma
@@ -117,7 +117,13 @@ bool Triangle::is_intersect_with_ray(const Ray& ray) const
 	if (beta < 0 || beta + gamma > 1)
 		return false;
 
+	t_max = t;
 	return true;
+}
+
+bool Triangle::is_intersect_with_ray(const Ray& ray, float& t_max) const
+{
+	return Triangle::is_ray_triangle_intersect(ray, world_position[0], world_position[1], world_position[2], t_max);	
 }
 
 } /* _462 */

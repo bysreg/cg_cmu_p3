@@ -30,7 +30,7 @@ public:
 
     virtual void render() const;
     virtual bool initialize();
-	virtual bool is_intersect_with_ray(const Ray& ray) const;
+	virtual bool is_intersect_with_ray(const Ray& ray, float& t_max) const;
 };
 
 

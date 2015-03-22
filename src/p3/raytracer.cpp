@@ -54,17 +54,20 @@ bool Raytracer::initialize(Scene* scene, size_t num_samples,
 }
 
 //compute ambient lighting
-Color3 Raytracer::trace_ray(const Ray &ray/*maybe some more arguments*/){        
+Color3 Raytracer::trace_ray(const Ray &ray){        
 	Geometry* const* geometries = scene->get_geometries();
+	float t_max = std::numeric_limits<float>::max();
+	Color3 ret = Color3(1, 1 ,1);
 	for (size_t i = 0; i < scene->num_geometries(); ++i)
 	{
-		if (geometries[i]->is_intersect_with_ray(ray))
+		if (geometries[i]->is_intersect_with_ray(ray, t_max))
 		{
-			return Color3(0, 0, 0);
+			float shade = (256.0f / scene->num_geometries() * i) / 255.0f;
+			ret = Color3(shade, shade, shade);			
 		}
 	}
 
-	return Color3(1, 1, 1);
+	return ret;
 }
 
 /**
