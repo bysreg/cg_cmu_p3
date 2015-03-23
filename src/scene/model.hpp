@@ -25,6 +25,8 @@ public:
     const MeshTree *tree;
     const Material* material;
 
+	Vector3* world_normals;
+
     Model();
     virtual ~Model();
 

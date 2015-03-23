@@ -37,6 +37,7 @@ public:
     Vertex vertices[3];
 
 	Vector3 world_position[3]; // the position of the vertices in world coordinate
+	Vector3 world_normal[3]; // the normal of the vertices in world coordinate
 
     Triangle();
     virtual ~Triangle();

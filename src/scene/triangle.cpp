@@ -25,9 +25,15 @@ bool Triangle::initialize()
 {
 	Geometry::initialize();
 
-	world_position[0] = mat.transform_point(vertices[0].position);
-	world_position[1] = mat.transform_point(vertices[1].position);
-	world_position[2] = mat.transform_point(vertices[2].position);
+	for (int i = 0; i < 3; i++)
+	{
+		world_position[i] = mat.transform_point(vertices[i].position);
+		world_normal[i] = normMat * vertices[i].normal;
+		if (world_normal[i] != Vector3::Ones())
+		{
+			world_normal[i] = normalize(world_normal[i]); // this normal has been scaled, so we have to normalize it back
+		}
+	}
 
 	return true;
 }
@@ -129,6 +135,8 @@ bool Triangle::is_intersect_with_ray(const Ray& ray, Intersection& intersection)
 	if (is_ray_triangle_intersect(ray, world_position[0], world_position[1], world_position[2], t_max, alpha, beta, gamma))
 	{
 		intersection.t = t_max;
+		intersection.normal = alpha * world_normal[0] + beta * world_normal[1] + gamma * world_normal[2];
+		intersection.position = ray.at_time(intersection.t);
 		return true;
 	}
 	return false;

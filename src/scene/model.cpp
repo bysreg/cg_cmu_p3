@@ -19,8 +19,15 @@
 
 namespace _462 {
 
-Model::Model() : mesh( 0 ), material( 0 ) { }
-Model::~Model() { }
+Model::Model() : mesh( 0 ), material( 0 ), world_normals(nullptr) { }
+Model::~Model() 
+{ 
+	if (world_normals != nullptr)
+	{
+		delete[] world_normals;
+		world_normals = nullptr;
+	}
+}
 
 void Model::render() const
 {
@@ -34,6 +41,18 @@ void Model::render() const
 }
 bool Model::initialize(){
     Geometry::initialize();
+
+	world_normals = new Vector3[mesh->vertices.size()];
+
+	for (int i = 0; i < mesh->vertices.size(); i++)
+	{
+		world_normals[i] = normMat * mesh->vertices[i].normal;
+		if (world_normals[i] != Vector3::Ones())
+		{
+			world_normals[i] = normalize(world_normals[i]);
+		}
+	}
+
     return true;
 }
 
@@ -51,6 +70,8 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 		if (Triangle::is_ray_triangle_intersect(local_ray, p1, p2, p3, t_max, alpha, beta, gamma))
 		{ 
 			intersection.t = t_max;
+			intersection.normal = alpha * world_normals[mesh->triangles[i].vertices[0]] + beta * world_normals[mesh->triangles[i].vertices[1]] + gamma * world_normals[mesh->triangles[i].vertices[2]];
+			intersection.position = ray.at_time(intersection.t);
 			return true;
 		}		
 	}
