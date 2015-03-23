@@ -25,6 +25,9 @@ class Geometry;
 
 //represents an intersection between a ray and a geometry
 struct Intersection{
+	float t;
+	Vector3 normal;
+	Vector3 position; // world coordinate
 };
 
 //typedef struct Intersection Intersection;
@@ -66,7 +69,7 @@ public:
 
     virtual bool initialize();
 
-	virtual bool is_intersect_with_ray(const Ray& ray, float& t) const = 0;
+	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const = 0;
 };
 
 

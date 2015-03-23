@@ -76,7 +76,7 @@ void Triangle::render() const
         vertices[0].material->reset_gl_state();
 }
 
-bool Triangle::is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, float& t_max)
+bool Triangle::is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, float& t_max, float& alpha, float& beta, float& gamma)
 {
 	float a = p1.x - p2.x;
 	float b = p1.y - p2.y;
@@ -106,24 +106,32 @@ bool Triangle::is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, cons
 		return false;
 
 	//compute gamma
-	float gamma = (i*(ak_min_jb)+h*(jc_min_al)+g*(bl_min_kc)) / M;
+	gamma = (i*(ak_min_jb)+h*(jc_min_al)+g*(bl_min_kc)) / M;
 
 	if (gamma < 0 || gamma > 1)
 		return false;
 
 	//compute beta
-	float beta = (j*(ei_min_hf)+k*(gf_min_di)+l*(dh_min_eg)) / M;
+	beta = (j*(ei_min_hf)+k*(gf_min_di)+l*(dh_min_eg)) / M;
 
 	if (beta < 0 || beta + gamma > 1)
 		return false;
 
 	t_max = t;
+	alpha = 1 - beta - gamma;
 	return true;
 }
 
-bool Triangle::is_intersect_with_ray(const Ray& ray, float& t_max) const
+bool Triangle::is_intersect_with_ray(const Ray& ray, Intersection& intersection) const
 {
-	return Triangle::is_ray_triangle_intersect(ray, world_position[0], world_position[1], world_position[2], t_max);	
+	float t_max = intersection.t;
+	float alpha, beta, gamma;
+	if (is_ray_triangle_intersect(ray, world_position[0], world_position[1], world_position[2], t_max, alpha, beta, gamma))
+	{
+		intersection.t = t_max;
+		return true;
+	}
+	return false;
 }
 
 } /* _462 */

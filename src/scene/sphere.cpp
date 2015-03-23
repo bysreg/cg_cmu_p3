@@ -131,7 +131,7 @@ real_t solve_time(real_t a,real_t b,real_t c){
     return -1;
 }
 
-bool Sphere::is_intersect_with_ray(const Ray& ray, float& t_max) const
+bool Sphere::is_intersect_with_ray(const Ray& ray, Intersection& intersection) const
 {
 	Vector3 e = invMat.transform_point(ray.e);
 	Vector3 d = invMat.transform_vector(ray.d);	
@@ -150,22 +150,29 @@ bool Sphere::is_intersect_with_ray(const Ray& ray, float& t_max) const
 
 	//check the first root
 	float sqrt_determinant = sqrt(determinant);
-	float t1 = (-B + sqrt_determinant) / 2 * A;
-	if (t1 > 0 && t1 < t_max)
+	float t1 = (-B + sqrt_determinant) / (2 * A);
+	if (t1 > 0 && t1 < intersection.t)
 	{
-		t_max = t1;
+		update_intersection(ray, t1, intersection);
 		return true;
 	}
 
 	//check the second root
-	float t2 = (-B - sqrt_determinant) / 2 * A;
-	if (t2 > 0 && t2 < t_max)
-	{
-		t_max = t2;
+	float t2 = (-B - sqrt_determinant) / (2 * A);
+	if (t2 > 0 && t2 < intersection.t)
+	{		
+		update_intersection(ray, t2, intersection);
 		return true;
 	}
 
 	return false;
+}
+
+void Sphere::update_intersection(const Ray& ray, float t, Intersection& intersection) const
+{
+	intersection.t = t;
+	intersection.position = ray.at_time(t);
+	intersection.normal = normalize(intersection.position - position);
 }
 
 } /* _462 */

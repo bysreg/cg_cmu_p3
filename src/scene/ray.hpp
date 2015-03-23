@@ -21,7 +21,7 @@ public:
     
     Ray();
     Ray(Vector3 e, Vector3 d);
-    Vector3 atTime(real_t t){
+    Vector3 at_time(real_t t) const {
     return e+d*t;
     }
 };
