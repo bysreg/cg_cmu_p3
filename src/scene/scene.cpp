@@ -51,8 +51,11 @@ Scene::~Scene()
 bool Scene::initialize()
 {
     bool res = true;
-    for (unsigned int i = 0; i < num_geometries(); i++)
-        res &= geometries[i]->initialize();
+	for (unsigned int i = 0; i < num_geometries(); i++)
+	{
+		res &= geometries[i]->initialize();
+		geometries[i]->scene = this;
+	}        
     return res;
 }
 

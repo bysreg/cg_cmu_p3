@@ -22,6 +22,7 @@
 
 namespace _462 {
 class Geometry;
+class Scene;
 
 //represents an intersection between a ray and a geometry
 struct Intersection{
@@ -62,6 +63,10 @@ public:
     // Normal transformation matrix
     Matrix3 normMat;
     bool isBig;
+
+	//the scene where this geometris is placed (do not destroy)
+	Scene* scene;
+
     /**
      * Renders this geometry using OpenGL in the local coordinate space.
      */
@@ -70,6 +75,8 @@ public:
     virtual bool initialize();
 
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const = 0;
+
+	virtual Color3 compute_color(Vector3 position, Vector3 normal) const = 0;
 };
 
 
@@ -107,7 +114,7 @@ public:
     Camera camera;
     /// the background color
     Color3 background_color;
-    /// the amibient light of the scene
+    /// the ambient light of the scene
     Color3 ambient_light;
     /// the refraction index of air
     real_t refractive_index;

@@ -175,5 +175,23 @@ void Sphere::update_intersection(const Ray& ray, float t, Intersection& intersec
 	intersection.normal = normalize(intersection.position - position);
 }
 
+Color3 Sphere::compute_color(Vector3 position, Vector3 normal) const
+{
+	 
+	Color3 ret = scene->ambient_light * material->ambient;
+	Vector3 view_dir = normalize(scene->camera.get_position() - position);
+
+	//for every light
+	for (int i = 0; i < scene->num_lights(); i++)
+	{
+		const SphereLight& light = scene->get_lights()[i];
+		Vector3 light_dir = normalize(light.position - position);
+		ret += light.color * material->diffuse * std::max((real_t) 0, dot(normal, light_dir)); // diffuse
+		//ret += light.color * material->specular * std::max((real_t)0, dot(view_dir, reflect(light_dir, normal))); //specular
+	}
+
+	return ret;
+}
+
 } /* _462 */
 

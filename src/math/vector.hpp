@@ -470,6 +470,15 @@ inline Vector3 normalize( const Vector3& v ) {
 }
 
 /**
+ * For a given incident vector I and surface normal N reflect returns the reflection direction calculated as I - 2.0 * dot(N, I) * N.
+ * N should be normalized in order to achieve the desired result.
+ */
+inline Vector3 reflect(const Vector3& I, const Vector3& N)
+{
+	return I - (N * 2.0f * dot(N, I));
+}
+
+/**
  * Returns a vector whose elements are the absolute values of all the
  * elements of this vector.
  */

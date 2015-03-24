@@ -142,4 +142,11 @@ bool Triangle::is_intersect_with_ray(const Ray& ray, Intersection& intersection)
 	return false;
 }
 
+Color3 Triangle::compute_color(Vector3 position, Vector3 normal) const
+{
+	Color3 ret;
+
+	return ret;
+}
+
 } /* _462 */
