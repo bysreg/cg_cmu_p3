@@ -72,6 +72,7 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 			intersection.t = t_max;
 			intersection.normal = alpha * world_normals[mesh->triangles[i].vertices[0]] + beta * world_normals[mesh->triangles[i].vertices[1]] + gamma * world_normals[mesh->triangles[i].vertices[2]];
 			intersection.position = ray.at_time(intersection.t);
+			intersection.geometry = this;
 			return true;
 		}		
 	}

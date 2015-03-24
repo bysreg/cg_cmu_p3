@@ -29,6 +29,9 @@ struct Intersection{
 	float t;
 	Vector3 normal;
 	Vector3 position; // world coordinate
+	const Geometry* geometry;
+
+	Intersection() : geometry(nullptr) {}
 };
 
 //typedef struct Intersection Intersection;

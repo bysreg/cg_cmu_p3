@@ -148,20 +148,11 @@ bool Sphere::is_intersect_with_ray(const Ray& ray, Intersection& intersection) c
 	
 	//determinant is >= 0
 
-	//check the first root
-	float sqrt_determinant = sqrt(determinant);
-	float t1 = (-B + sqrt_determinant) / (2 * A);
-	if (t1 > 0 && t1 < intersection.t)
-	{
-		update_intersection(ray, t1, intersection);
-		return true;
-	}
+	float t = solve_time(A, B, C);
 
-	//check the second root
-	float t2 = (-B - sqrt_determinant) / (2 * A);
-	if (t2 > 0 && t2 < intersection.t)
-	{		
-		update_intersection(ray, t2, intersection);
+	if (t > 0 && t < intersection.t)
+	{
+		update_intersection(ray, t, intersection);
 		return true;
 	}
 
@@ -173,6 +164,7 @@ void Sphere::update_intersection(const Ray& ray, float t, Intersection& intersec
 	intersection.t = t;
 	intersection.position = ray.at_time(t);
 	intersection.normal = normalize(intersection.position - position);
+	intersection.geometry = this;
 }
 
 Color3 Sphere::compute_color(Vector3 position, Vector3 normal) const

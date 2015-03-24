@@ -137,6 +137,7 @@ bool Triangle::is_intersect_with_ray(const Ray& ray, Intersection& intersection)
 		intersection.t = t_max;
 		intersection.normal = alpha * world_normal[0] + beta * world_normal[1] + gamma * world_normal[2];
 		intersection.position = ray.at_time(intersection.t);
+		intersection.geometry = this;
 		return true;
 	}
 	return false;
