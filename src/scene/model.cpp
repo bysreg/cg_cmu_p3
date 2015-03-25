@@ -85,6 +85,7 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 
 Color3 Model::compute_color(Raytracer* raytracer, Intersection intersection) const
 {
+	//TODO : does not support refraction
 	Vector3 intersect_pos = intersection.position;
 	Vector3 intersect_normal = intersection.normal;
 	Color3 ret = scene->ambient_light * material->ambient;

@@ -61,10 +61,10 @@ bool Raytracer::shoot_ray(const Ray& ray, Intersection& intersection, float t_ma
 	intersection.t = t_max;
 	for (size_t i = 0; i < scene->num_geometries(); ++i)
 	{
-		ret = ret || geometries[i]->is_intersect_with_ray(ray, intersection);
+		geometries[i]->is_intersect_with_ray(ray, intersection);
 	}	
 
-	return ret;
+	return intersection.geometry != nullptr;
 }
 
 Color3 Raytracer::trace_ray(const Ray &ray){        	
