@@ -170,23 +170,23 @@ void Sphere::update_intersection(const Ray& ray, float t, Intersection& intersec
 
 Color3 Sphere::compute_color(Raytracer* raytracer, Intersection intersection) const
 {
-	// TODO : does not support shadow and refraction 
-	Vector3 position = intersection.position;
-	Vector3 normal = intersection.normal;
+	// TODO : does not support refraction 
+	Vector3 intersect_pos = intersection.position;
+	Vector3 intersect_normal = intersection.normal;
 	Color3 ret = scene->ambient_light * material->ambient;	
 	
 	for (int i = 0; i < scene->num_lights(); i++)
 	{
 		const SphereLight& light = scene->get_lights()[i];
-		Vector3 light_dir = normalize(light.position - intersection.position);
+		Vector3 light_dir = normalize(light.position - intersect_pos);
 
 		//is this light blocked ?
-		Ray shadow_ray(intersection.position, light_dir);	
-		shadow_ray.e = shadow_ray.at_time(5);
+		Ray shadow_ray(intersect_pos, light_dir);
 		Intersection shadow_intersection;
-		if (!raytracer->shoot_ray(shadow_ray, shadow_intersection))
+		float t_max = dot(light.position - shadow_ray.e, light_dir);
+		if (!raytracer->shoot_ray(shadow_ray, shadow_intersection, t_max))
 		{
-			ret += light.color * material->diffuse * std::max((real_t)0, dot(normal, light_dir)); // diffuse		
+			ret += light.color * material->diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
 		}				
 	}
 

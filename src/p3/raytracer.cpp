@@ -54,11 +54,11 @@ bool Raytracer::initialize(Scene* scene, size_t num_samples,
 }
 
 //will always make intersection.t to max of float first whatever the result is
-bool Raytracer::shoot_ray(const Ray& ray, Intersection& intersection)
+bool Raytracer::shoot_ray(const Ray& ray, Intersection& intersection, float t_max)
 {
 	Geometry* const* geometries = scene->get_geometries();
 	bool ret = false;
-	intersection.t = std::numeric_limits<float>::max();
+	intersection.t = t_max;
 	for (size_t i = 0; i < scene->num_geometries(); ++i)
 	{
 		ret = ret || geometries[i]->is_intersect_with_ray(ray, intersection);
@@ -71,7 +71,7 @@ Color3 Raytracer::trace_ray(const Ray &ray){
 	Color3 ret = scene->background_color;
 	Intersection intersection;
 	
-	if (shoot_ray(ray, intersection))
+	if (shoot_ray(ray, intersection, std::numeric_limits<float>::max()))
 	{
 		ret = intersection.geometry->compute_color(this, intersection);
 	}

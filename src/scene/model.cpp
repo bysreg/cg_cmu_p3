@@ -94,6 +94,7 @@ Color3 Model::compute_color(Raytracer* raytracer, Intersection intersection) con
 		const SphereLight& light = scene->get_lights()[i];
 		Vector3 light_dir = normalize(light.position - intersect_pos);
 		ret += light.color * material->diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
+
 	}
 
 	return ret;
