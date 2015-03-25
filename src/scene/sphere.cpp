@@ -174,8 +174,7 @@ Color3 Sphere::compute_color(Intersection intersection) const
 	Vector3 normal = intersection.normal;
 	Color3 ret = scene->ambient_light * material->ambient;
 	Vector3 view_dir = normalize(scene->camera.get_position() - position);
-
-	//for every light
+	
 	for (int i = 0; i < scene->num_lights(); i++)
 	{
 		const SphereLight& light = scene->get_lights()[i];

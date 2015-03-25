@@ -39,6 +39,7 @@ void Model::render() const
     if ( material )
         material->reset_gl_state();
 }
+
 bool Model::initialize(){
     Geometry::initialize();
 
@@ -59,6 +60,7 @@ bool Model::initialize(){
 bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) const
 {
 	Ray local_ray(invMat.transform_point(ray.e), invMat.transform_vector(ray.d));
+	bool found = false;
 
 	for (int i = 0; i < mesh->num_triangles(); i++)
 	{
@@ -67,24 +69,31 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 		const Vector3& p3 = mesh->vertices[mesh->triangles[i].vertices[2]].position;
 		float t_max = intersection.t;
 		float alpha, beta, gamma;
-		if (Triangle::is_ray_triangle_intersect(local_ray, p1, p2, p3, t_max, alpha, beta, gamma))
+		if (Triangle::is_ray_triangle_intersect(local_ray, p1, p2, p3, t_max, alpha, beta, gamma) && t_max > 0 && t_max < intersection.t)
 		{ 
 			intersection.t = t_max;
 			intersection.normal = alpha * world_normals[mesh->triangles[i].vertices[0]] + beta * world_normals[mesh->triangles[i].vertices[1]] + gamma * world_normals[mesh->triangles[i].vertices[2]];
 			intersection.position = ray.at_time(intersection.t);
 			intersection.geometry = this;
-			return true;
+			found = true;
 		}		
 	}
 
-	return false;
+	return found;
 }
 
 Color3 Model::compute_color(Intersection intersection) const
 {
-	Color3 ret;
+	Vector3 intersect_pos = intersection.position;
+	Vector3 intersect_normal = intersection.normal;
+	Color3 ret = scene->ambient_light * material->ambient;
 
-
+	for (int i = 0; i < scene->num_lights(); i++)
+	{
+		const SphereLight& light = scene->get_lights()[i];
+		Vector3 light_dir = normalize(light.position - intersect_pos);
+		ret += light.color * material->diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
+	}
 
 	return ret;
 }
