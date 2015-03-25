@@ -71,7 +71,7 @@ Color3 Raytracer::trace_ray(const Ray &ray){
 
 	if (intersection.geometry != nullptr)
 	{
-		ret = intersection.geometry->compute_color(intersection.position, intersection.normal);
+		ret = intersection.geometry->compute_color(intersection);
 	}
 
 	return ret;

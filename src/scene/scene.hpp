@@ -30,6 +30,11 @@ struct Intersection{
 	Vector3 normal;
 	Vector3 position; // world coordinate
 	const Geometry* geometry;
+	
+	//only valid on triangle
+	float alpha;
+	float beta;
+	float gamma;
 
 	Intersection() : geometry(nullptr) {}
 };
@@ -79,7 +84,7 @@ public:
 
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const = 0;
 
-	virtual Color3 compute_color(Vector3 position, Vector3 normal) const = 0;
+	virtual Color3 compute_color(Intersection intersection) const = 0;
 };
 
 

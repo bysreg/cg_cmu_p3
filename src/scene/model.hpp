@@ -33,7 +33,7 @@ public:
     virtual void render() const;
     virtual bool initialize();
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const;
-	virtual Color3 compute_color(Vector3 position, Vector3 normal) const;
+	virtual Color3 compute_color(Intersection intersection) const;
 };
 
 

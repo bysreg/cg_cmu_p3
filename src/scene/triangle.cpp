@@ -138,14 +138,37 @@ bool Triangle::is_intersect_with_ray(const Ray& ray, Intersection& intersection)
 		intersection.normal = alpha * world_normal[0] + beta * world_normal[1] + gamma * world_normal[2];
 		intersection.position = ray.at_time(intersection.t);
 		intersection.geometry = this;
+		intersection.alpha = alpha;
+		intersection.beta = beta;
+		intersection.gamma = gamma;
 		return true;
 	}
 	return false;
 }
 
-Color3 Triangle::compute_color(Vector3 position, Vector3 normal) const
+template<class T> T interpolate_value(float alpha, float beta, float gamma, T v1, T v2, T v3)
 {
+	return alpha * v1 + beta * v2 + gamma * v3;
+}
+
+Color3 Triangle::compute_color(Intersection intersection) const
+{
+	//TODO : does not support shadow and refraction
+	Vector3 intersect_pos = intersection.position;
+	Vector3 intersect_normal = intersection.normal;
 	Color3 ret;
+
+	Color3 ambient = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->ambient, vertices[1].material->ambient, vertices[2].material->ambient);
+	Color3 diffuse = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->diffuse, vertices[1].material->diffuse, vertices[2].material->diffuse);
+
+	for (int i = 0; i < scene->num_lights(); i++)
+	{
+		const SphereLight& light = scene->get_lights()[i];
+		Vector3 light_dir = normalize(light.position - intersect_pos);
+		ret += light.color * diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
+	}
+
+	ret += (scene->ambient_light * ambient);
 
 	return ret;
 }

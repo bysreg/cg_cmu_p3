@@ -80,9 +80,11 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 	return false;
 }
 
-Color3 Model::compute_color(Vector3 position, Vector3 normal) const
+Color3 Model::compute_color(Intersection intersection) const
 {
 	Color3 ret;
+
+
 
 	return ret;
 }

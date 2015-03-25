@@ -167,9 +167,11 @@ void Sphere::update_intersection(const Ray& ray, float t, Intersection& intersec
 	intersection.geometry = this;
 }
 
-Color3 Sphere::compute_color(Vector3 position, Vector3 normal) const
+Color3 Sphere::compute_color(Intersection intersection) const
 {
-	 
+	// TODO : does not support shadow and refraction 
+	Vector3 position = intersection.position;
+	Vector3 normal = intersection.normal;
 	Color3 ret = scene->ambient_light * material->ambient;
 	Vector3 view_dir = normalize(scene->camera.get_position() - position);
 
@@ -178,8 +180,7 @@ Color3 Sphere::compute_color(Vector3 position, Vector3 normal) const
 	{
 		const SphereLight& light = scene->get_lights()[i];
 		Vector3 light_dir = normalize(light.position - position);
-		ret += light.color * material->diffuse * std::max((real_t) 0, dot(normal, light_dir)); // diffuse
-		//ret += light.color * material->specular * std::max((real_t)0, dot(view_dir, reflect(light_dir, normal))); //specular
+		ret += light.color * material->diffuse * std::max((real_t) 0, dot(normal, light_dir)); // diffuse		
 	}
 
 	return ret;
