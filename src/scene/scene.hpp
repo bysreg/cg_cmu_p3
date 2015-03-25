@@ -23,6 +23,7 @@
 namespace _462 {
 class Geometry;
 class Scene;
+class Raytracer;
 
 //represents an intersection between a ray and a geometry
 struct Intersection{
@@ -84,7 +85,7 @@ public:
 
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const = 0;
 
-	virtual Color3 compute_color(Intersection intersection) const = 0;
+	virtual Color3 compute_color(Raytracer* raytracer, Intersection intersection) const = 0;
 };
 
 

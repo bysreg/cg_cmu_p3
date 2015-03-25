@@ -53,25 +53,27 @@ bool Raytracer::initialize(Scene* scene, size_t num_samples,
     return true;
 }
 
-//compute ambient lighting
-Color3 Raytracer::trace_ray(const Ray &ray){        
-	Geometry* const* geometries = scene->get_geometries();	
-	Color3 ret = scene->background_color;
-	Intersection intersection;
+//will always make intersection.t to max of float first whatever the result is
+bool Raytracer::shoot_ray(const Ray& ray, Intersection& intersection)
+{
+	Geometry* const* geometries = scene->get_geometries();
+	bool ret = false;
 	intersection.t = std::numeric_limits<float>::max();
 	for (size_t i = 0; i < scene->num_geometries(); ++i)
 	{
-		if (geometries[i]->is_intersect_with_ray(ray, intersection))
-		{						
-			//for debugging
-			//float shade = (256.0f / scene->num_geometries() * i) / 255.0f;
-			//ret = Color3(shade, shade, 0.5f);			
-		}
-	}
+		ret = ret || geometries[i]->is_intersect_with_ray(ray, intersection);
+	}	
 
-	if (intersection.geometry != nullptr)
+	return ret;
+}
+
+Color3 Raytracer::trace_ray(const Ray &ray){        	
+	Color3 ret = scene->background_color;
+	Intersection intersection;
+	
+	if (shoot_ray(ray, intersection))
 	{
-		ret = intersection.geometry->compute_color(intersection);
+		ret = intersection.geometry->compute_color(this, intersection);
 	}
 
 	return ret;

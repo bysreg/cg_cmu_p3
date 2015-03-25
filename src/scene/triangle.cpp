@@ -8,6 +8,7 @@
 #include "scene/triangle.hpp"
 #include "application/opengl.hpp"
 #include "math/math.hpp"
+#include "p3/raytracer.hpp"
 
 namespace _462 {
 
@@ -108,7 +109,7 @@ bool Triangle::is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, cons
 	float bl_min_kc = b*l - k*c;
 	float t = (f*(ak_min_jb)+e*(jc_min_al)+d*(bl_min_kc)) / -M;
 
-	if (t < 0 || t > t_max) // should be t < to || t > t1
+	if (t < EPS || t > t_max)
 		return false;
 
 	//compute gamma
@@ -151,7 +152,7 @@ template<class T> T interpolate_value(float alpha, float beta, float gamma, T v1
 	return alpha * v1 + beta * v2 + gamma * v3;
 }
 
-Color3 Triangle::compute_color(Intersection intersection) const
+Color3 Triangle::compute_color(Raytracer* raytracer, Intersection intersection) const
 {
 	//TODO : does not support shadow and refraction
 	Vector3 intersect_pos = intersection.position;

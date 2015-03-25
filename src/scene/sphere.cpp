@@ -8,6 +8,7 @@
 
 #include "scene/sphere.hpp"
 #include "application/opengl.hpp"
+#include "p3/raytracer.hpp"
 #include <algorithm>
 
 namespace _462 {
@@ -150,7 +151,7 @@ bool Sphere::is_intersect_with_ray(const Ray& ray, Intersection& intersection) c
 
 	float t = solve_time(A, B, C);
 
-	if (t > 0 && t < intersection.t)
+	if (t > EPS && t < intersection.t)
 	{
 		update_intersection(ray, t, intersection);
 		return true;
@@ -167,19 +168,26 @@ void Sphere::update_intersection(const Ray& ray, float t, Intersection& intersec
 	intersection.geometry = this;
 }
 
-Color3 Sphere::compute_color(Intersection intersection) const
+Color3 Sphere::compute_color(Raytracer* raytracer, Intersection intersection) const
 {
 	// TODO : does not support shadow and refraction 
 	Vector3 position = intersection.position;
 	Vector3 normal = intersection.normal;
-	Color3 ret = scene->ambient_light * material->ambient;
-	Vector3 view_dir = normalize(scene->camera.get_position() - position);
+	Color3 ret = scene->ambient_light * material->ambient;	
 	
 	for (int i = 0; i < scene->num_lights(); i++)
 	{
 		const SphereLight& light = scene->get_lights()[i];
-		Vector3 light_dir = normalize(light.position - position);
-		ret += light.color * material->diffuse * std::max((real_t) 0, dot(normal, light_dir)); // diffuse		
+		Vector3 light_dir = normalize(light.position - intersection.position);
+
+		//is this light blocked ?
+		Ray shadow_ray(intersection.position, light_dir);	
+		shadow_ray.e = shadow_ray.at_time(5);
+		Intersection shadow_intersection;
+		if (!raytracer->shoot_ray(shadow_ray, shadow_intersection))
+		{
+			ret += light.color * material->diffuse * std::max((real_t)0, dot(normal, light_dir)); // diffuse		
+		}				
 	}
 
 	return ret;

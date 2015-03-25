@@ -35,6 +35,8 @@ public:
 
     bool initialize(Scene* scene, size_t num_samples,
                     size_t width, size_t height);
+
+	bool shoot_ray(const Ray& ray, Intersection& intersection);
     Color3 trace_ray(const Ray &ray);
     
     bool raytrace(unsigned char* buffer, real_t* max_time);

@@ -10,6 +10,7 @@
 #include "scene/material.hpp"
 #include "application/opengl.hpp"
 #include "scene/triangle.hpp"
+#include "p3/raytracer.hpp"
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -69,7 +70,7 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 		const Vector3& p3 = mesh->vertices[mesh->triangles[i].vertices[2]].position;
 		float t_max = intersection.t;
 		float alpha, beta, gamma;
-		if (Triangle::is_ray_triangle_intersect(local_ray, p1, p2, p3, t_max, alpha, beta, gamma) && t_max > 0 && t_max < intersection.t)
+		if (Triangle::is_ray_triangle_intersect(local_ray, p1, p2, p3, t_max, alpha, beta, gamma) && t_max > EPS && t_max < intersection.t)
 		{ 
 			intersection.t = t_max;
 			intersection.normal = alpha * world_normals[mesh->triangles[i].vertices[0]] + beta * world_normals[mesh->triangles[i].vertices[1]] + gamma * world_normals[mesh->triangles[i].vertices[2]];
@@ -82,7 +83,7 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 	return found;
 }
 
-Color3 Model::compute_color(Intersection intersection) const
+Color3 Model::compute_color(Raytracer* raytracer, Intersection intersection) const
 {
 	Vector3 intersect_pos = intersection.position;
 	Vector3 intersect_normal = intersection.normal;
