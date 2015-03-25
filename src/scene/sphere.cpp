@@ -186,7 +186,10 @@ Color3 Sphere::compute_color(Raytracer* raytracer, Intersection intersection) co
 		float t_max = dot(light.position - shadow_ray.e, light_dir);
 		if (!raytracer->shoot_ray(shadow_ray, shadow_intersection, t_max))
 		{
-			ret += light.color * material->diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
+			//calculate the attenuation
+			Color3 light_color_at_d = light.compute_light_color_at_d(t_max);
+
+ 			ret += light.color * material->diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
 		}				
 	}
 

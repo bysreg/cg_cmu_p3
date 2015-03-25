@@ -38,6 +38,11 @@ SphereLight::SphereLight():
     attenuation.quadratic = 0;
 }
 
+Color3 SphereLight::compute_light_color_at_d(float distance) const
+{
+	return color / (attenuation.constant + distance*attenuation.linear + distance*distance*attenuation.quadratic);
+}
+
 Scene::Scene()
 {
     reset();

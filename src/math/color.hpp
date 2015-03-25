@@ -104,6 +104,11 @@ public:
         return Color3( r * s, g * s, b * s );
     }
 
+	Color3 operator/(real_t s) const
+	{
+		return Color3(r / s, g / s, b / s);
+	}
+
     Color3& operator*=( real_t s ) {
         r *= s;
         g *= s;

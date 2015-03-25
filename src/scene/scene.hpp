@@ -109,6 +109,8 @@ struct SphereLight
     // attenuation
     Attenuation attenuation;
     real_t radius;
+
+	Color3 compute_light_color_at_d(float distance) const;
 };
 
 /**
