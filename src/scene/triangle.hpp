@@ -48,6 +48,7 @@ public:
 	virtual Color3 get_ambient_color(const Intersection& intersection) const;
 	virtual Color3 get_diffuse_color(const Intersection& intersection) const;
 	virtual Color3 get_specular_color(const Intersection& intersection) const;
+	virtual real_t get_refractive_index(const Intersection& intersection) const;
 
 	static bool is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, float& t_max, float& alpha, float& beta, float& gamma);
 };

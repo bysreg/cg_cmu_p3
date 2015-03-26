@@ -182,5 +182,10 @@ Color3 Sphere::get_specular_color(const Intersection& intersection) const
 	return material->specular;
 }
 
+real_t Sphere::get_refractive_index(const Intersection& intersection) const
+{
+	return material->refractive_index;
+}
+
 } /* _462 */
 

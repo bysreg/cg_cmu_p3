@@ -77,7 +77,7 @@ Color3 Raytracer::trace_ray(const Ray& ray, int depth)
 
 	if (shoot_ray(ray, intersection, std::numeric_limits<float>::max()))
 	{
-		Color3 ret = scene->ambient_light * intersection.geometry->get_ambient_color(intersection);
+		Color3 ret;
 		Color3 diffuse_color = intersection.geometry->get_diffuse_color(intersection);
 
 		for (int i = 0; i < scene->num_lights(); i++)
@@ -107,15 +107,48 @@ Color3 Raytracer::trace_ray(const Ray& ray, int depth)
 			ret += color / DIRECT_SAMPLE_COUNT;
 		}
 		
-		Color3 specular_color = intersection.geometry->get_specular_color(intersection);
+		Color3 geom_specular_color = intersection.geometry->get_specular_color(intersection);
+		real_t geom_refractive_index = intersection.geometry->get_refractive_index(intersection);
+		Color3 total_specular_color;
+		Color3 total_refraction_color;
 
-		if (depth - 1 >= 0 && specular_color != Color3::Black())
+		if (depth - 1 >= 0 && geom_specular_color != Color3::Black())
 		{
 			Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
-			ret += specular_color * trace_ray(reflection_ray, depth - 1);
+			total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 		}		
 
-		return ret;
+		if (depth - 1 >= 0 && geom_refractive_index > 0)
+		{
+			Vector3 refraction_dir;
+			float cos_val = -dot(ray.d, intersection.normal);
+			if (dot(ray.d, intersection.normal) < 0)
+			{
+				refraction_dir = normalize(refract(intersection.normal, ray.d, 1.0f / geom_refractive_index)); // no need to check for total internal reflection here. because air is the highest refractive index
+				cos_val = -dot(ray.d, intersection.normal);
+			}
+			else
+			{
+				refraction_dir = refract(-intersection.normal, ray.d, geom_refractive_index / 1.0f);
+				if (refraction_dir != Vector3::Zero())
+				{
+					refraction_dir = normalize(refraction_dir);
+					cos_val = dot(refraction_dir, intersection.normal);
+				}
+				else
+				{
+					//too bad, there is a total internal reflection here, so no refraction
+					return ret + total_specular_color; // no ambient color if there is refraction
+				}
+			}
+
+			real_t R0 = 1.0f * ((geom_refractive_index - 1) * (geom_refractive_index - 1)) / ((geom_refractive_index + 1) * (geom_refractive_index + 1));
+			real_t R = R0 + ((1 - R0) * (1 - cos_val) * (1 - cos_val) * (1 - cos_val) * (1 - cos_val) * (1 - cos_val));
+			Ray refraction_ray(intersection.position, refraction_dir);
+			return ret + (R * total_specular_color) + ((1 - R) * trace_ray(refraction_ray, depth - 1)); // no ambient color if there is refraction
+		}
+
+		return ret + total_specular_color + (scene->ambient_light * intersection.geometry->get_ambient_color(intersection));
 	}
 	else
 	{

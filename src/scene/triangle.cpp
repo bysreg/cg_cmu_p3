@@ -167,4 +167,9 @@ Color3 Triangle::get_specular_color(const Intersection& intersection) const
 	return interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->specular, vertices[1].material->specular, vertices[2].material->specular);
 }
 
+real_t Triangle::get_refractive_index(const Intersection& intersection) const
+{
+	return interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->refractive_index, vertices[1].material->refractive_index, vertices[2].material->refractive_index);
+}
+
 } /* _462 */

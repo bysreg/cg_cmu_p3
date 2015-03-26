@@ -19,7 +19,7 @@ namespace _462 {
 #endif
     
 //maximum depth of the recursive (sampling) tracing
-#define MAX_DEPTH 3
+#define MAX_DEPTH 10
     
 //increase lighting by a factor
 #define WATT_BOOST 10.0
@@ -50,7 +50,17 @@ inline Vector3 reflect(const Vector3& incident, const Vector3& normal)
 }
 
 
-Vector3 refract(Vector3 norm,Vector3 inc,real_t ratio);
+inline Vector3 refract(Vector3 norm, Vector3 inc, real_t ratio)
+{
+	Vector3 ret;
+	real_t k = 1.0f - ratio * ratio * (1.0 - dot(norm, inc) * dot(norm, inc));
+	if (k < 0.0)
+		ret = Vector3::Zero();
+	else
+		ret = ratio * inc - (ratio * dot(norm, inc) + sqrt(k)) * norm;
+	return ret;
+}
+
 real_t montecarlo(Color3& light);
 
 }
