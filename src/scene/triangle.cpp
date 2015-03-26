@@ -152,20 +152,14 @@ template<class T> T interpolate_value(float alpha, float beta, float gamma, T v1
 	return alpha * v1 + beta * v2 + gamma * v3;
 }
 
-Color3 Triangle::compute_color(Raytracer* raytracer, const Intersection& intersection) const
+Color3 Triangle::get_ambient_color(const Intersection& intersection) const
 {
-	//TODO : does not support refraction
-	Vector3 intersect_pos = intersection.position;
-	Vector3 intersect_normal = intersection.normal;
-	Color3 ret;
+	return interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->ambient, vertices[1].material->ambient, vertices[2].material->ambient);
+}
 
-	Color3 ambient = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->ambient, vertices[1].material->ambient, vertices[2].material->ambient);
-	Color3 diffuse = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->diffuse, vertices[1].material->diffuse, vertices[2].material->diffuse);		
-	
-	ret += compute_diffuse_color(raytracer, intersection, diffuse);
-	ret += (scene->ambient_light * ambient);
-
-	return ret;
+Color3 Triangle::get_diffuse_color(const Intersection& intersection) const
+{
+	return interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->diffuse, vertices[1].material->diffuse, vertices[2].material->diffuse);
 }
 
 } /* _462 */

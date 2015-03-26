@@ -29,40 +29,6 @@ bool Geometry::initialize()
     return true;
 }
 
-Color3 Geometry::compute_diffuse_color(Raytracer* raytracer, const Intersection& intersection, const Color3& diffuse_color) const
-{
-	Color3 ret;
-
-	for (int i = 0; i < scene->num_lights(); i++)
-	{
-		Color3 color;
-		const SphereLight& light = scene->get_lights()[i];	
-
-		//is this light blocked ?
-		for (int j = 0; j < DIRECT_SAMPLE_COUNT; j++)
-		{
-			Vector3 light_pos(random_gaussian(), random_gaussian(), random_gaussian());
-			light_pos = (normalize(light_pos) * light.radius) + light.position;
-			Vector3 light_dir = normalize(light_pos - intersection.position);
-
-			Ray shadow_ray(intersection.position, light_dir);
-			Intersection shadow_intersection;
-			float t_max = dot(light_pos - shadow_ray.e, light_dir);
-			if (!raytracer->shoot_ray(shadow_ray, shadow_intersection, t_max))
-			{
-				//calculate the attenuation
-				Color3 light_color_at_d = light.compute_light_color_at_d(t_max);
-
-				color += light_color_at_d * diffuse_color * std::max((real_t)0, dot(intersection.normal, light_dir)); // diffuse		
-			}
-		}
-
-		ret += color / DIRECT_SAMPLE_COUNT;
-	}
-
-	return ret;
-}
-
 SphereLight::SphereLight():
     position(Vector3::Zero()),
     color(Color3::White()),
@@ -94,7 +60,6 @@ bool Scene::initialize()
 	for (unsigned int i = 0; i < num_geometries(); i++)
 	{
 		res &= geometries[i]->initialize();
-		geometries[i]->scene = this;
 	}        
     return res;
 }

@@ -44,7 +44,9 @@ public:
     virtual void render() const;
 	virtual bool initialize();
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const;
-	virtual Color3 compute_color(Raytracer* raytracer, const Intersection& intersection) const;
+
+	virtual Color3 get_ambient_color(const Intersection& intersection) const;
+	virtual Color3 get_diffuse_color(const Intersection& intersection) const;
 
 	static bool is_ray_triangle_intersect(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, float& t_max, float& alpha, float& beta, float& gamma);
 };

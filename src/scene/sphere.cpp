@@ -167,16 +167,14 @@ void Sphere::update_intersection(const Ray& local_ray, float t, Intersection& in
 	intersection.geometry = this;
 }
 
-Color3 Sphere::compute_color(Raytracer* raytracer, const Intersection& intersection) const
+Color3 Sphere::get_ambient_color(const Intersection& intersection) const
 {
-	// TODO : does not support refraction 
-	Vector3 intersect_pos = intersection.position;
-	Vector3 intersect_normal = intersection.normal;
-	Color3 ret = scene->ambient_light * material->ambient;	
+	return material->ambient;
+}
 
-	ret += compute_diffuse_color(raytracer, intersection, material->diffuse);
-
-	return ret;
+Color3 Sphere::get_diffuse_color(const Intersection& intersection) const
+{
+	return material->diffuse;
 }
 
 } /* _462 */

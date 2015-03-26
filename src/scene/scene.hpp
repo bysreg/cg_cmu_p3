@@ -73,9 +73,6 @@ public:
     Matrix3 normMat;
     bool isBig;
 
-	//the scene where this geometris is placed (do not destroy)
-	Scene* scene;
-
     /**
      * Renders this geometry using OpenGL in the local coordinate space.
      */
@@ -85,9 +82,8 @@ public:
 
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const = 0;
 
-	virtual Color3 compute_color(Raytracer* raytracer, const Intersection& intersection) const = 0;	
-
-	Color3 compute_diffuse_color(Raytracer* raytracer, const Intersection& intersection, const Color3& diffuse_color) const;
+	virtual Color3 get_ambient_color(const Intersection& intersection) const = 0;
+	virtual Color3 get_diffuse_color(const Intersection& intersection) const = 0;
 };
 
 
