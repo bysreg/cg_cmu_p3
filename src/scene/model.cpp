@@ -83,20 +83,14 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 	return found;
 }
 
-Color3 Model::compute_color(Raytracer* raytracer, Intersection intersection) const
+Color3 Model::compute_color(Raytracer* raytracer, const Intersection& intersection) const
 {
 	//TODO : does not support refraction
 	Vector3 intersect_pos = intersection.position;
 	Vector3 intersect_normal = intersection.normal;
 	Color3 ret = scene->ambient_light * material->ambient;
 
-	for (int i = 0; i < scene->num_lights(); i++)
-	{
-		const SphereLight& light = scene->get_lights()[i];
-		Vector3 light_dir = normalize(light.position - intersect_pos);
-		ret += light.color * material->diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
-
-	}
+	ret += compute_diffuse_color(raytracer, intersection, material->diffuse);
 
 	return ret;
 }

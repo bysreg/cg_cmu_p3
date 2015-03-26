@@ -152,7 +152,7 @@ template<class T> T interpolate_value(float alpha, float beta, float gamma, T v1
 	return alpha * v1 + beta * v2 + gamma * v3;
 }
 
-Color3 Triangle::compute_color(Raytracer* raytracer, Intersection intersection) const
+Color3 Triangle::compute_color(Raytracer* raytracer, const Intersection& intersection) const
 {
 	//TODO : does not support refraction
 	Vector3 intersect_pos = intersection.position;
@@ -160,23 +160,9 @@ Color3 Triangle::compute_color(Raytracer* raytracer, Intersection intersection) 
 	Color3 ret;
 
 	Color3 ambient = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->ambient, vertices[1].material->ambient, vertices[2].material->ambient);
-	Color3 diffuse = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->diffuse, vertices[1].material->diffuse, vertices[2].material->diffuse);
-
-	for (int i = 0; i < scene->num_lights(); i++)
-	{
-		const SphereLight& light = scene->get_lights()[i];
-		Vector3 light_dir = normalize(light.position - intersect_pos);		
-
-		//is this light blocked ?
-		Ray shadow_ray(intersection.position, light_dir);
-		Intersection shadow_intersection;
-		float t_max = dot(light.position - shadow_ray.e, light_dir);
-		if (!raytracer->shoot_ray(shadow_ray, shadow_intersection, t_max))
-		{
-			ret += light.color * diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
-		}
-	}
-
+	Color3 diffuse = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->diffuse, vertices[1].material->diffuse, vertices[2].material->diffuse);		
+	
+	ret += compute_diffuse_color(raytracer, intersection, diffuse);
 	ret += (scene->ambient_light * ambient);
 
 	return ret;

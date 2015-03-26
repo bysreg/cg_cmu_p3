@@ -85,7 +85,9 @@ public:
 
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const = 0;
 
-	virtual Color3 compute_color(Raytracer* raytracer, Intersection intersection) const = 0;
+	virtual Color3 compute_color(Raytracer* raytracer, const Intersection& intersection) const = 0;	
+
+	Color3 compute_diffuse_color(Raytracer* raytracer, const Intersection& intersection, const Color3& diffuse_color) const;
 };
 
 

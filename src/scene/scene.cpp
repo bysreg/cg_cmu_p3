@@ -7,6 +7,7 @@
  */
 
 #include "scene/scene.hpp"
+#include "p3/raytracer.hpp"
 namespace _462 {
 
 
@@ -26,6 +27,31 @@ bool Geometry::initialize()
     make_transformation_matrix(&mat, position, orientation, scale);
     make_normal_matrix(&normMat, mat);
     return true;
+}
+
+Color3 Geometry::compute_diffuse_color(Raytracer* raytracer, const Intersection& intersection, const Color3& diffuse_color) const
+{
+	Color3 ret;
+
+	for (int i = 0; i < scene->num_lights(); i++)
+	{
+		const SphereLight& light = scene->get_lights()[i];
+		Vector3 light_dir = normalize(light.position - intersection.position);
+
+		//is this light blocked ?
+		Ray shadow_ray(intersection.position, light_dir);
+		Intersection shadow_intersection;
+		float t_max = dot(light.position - shadow_ray.e, light_dir);
+		if (!raytracer->shoot_ray(shadow_ray, shadow_intersection, t_max))
+		{
+			//calculate the attenuation
+			Color3 light_color_at_d = light.compute_light_color_at_d(t_max);
+
+			ret += light_color_at_d * diffuse_color * std::max((real_t)0, dot(intersection.normal, light_dir)); // diffuse		
+		}				
+	}
+
+	return ret;
 }
 
 SphereLight::SphereLight():

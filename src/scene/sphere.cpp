@@ -167,30 +167,14 @@ void Sphere::update_intersection(const Ray& local_ray, float t, Intersection& in
 	intersection.geometry = this;
 }
 
-Color3 Sphere::compute_color(Raytracer* raytracer, Intersection intersection) const
+Color3 Sphere::compute_color(Raytracer* raytracer, const Intersection& intersection) const
 {
 	// TODO : does not support refraction 
 	Vector3 intersect_pos = intersection.position;
 	Vector3 intersect_normal = intersection.normal;
 	Color3 ret = scene->ambient_light * material->ambient;	
-	
-	for (int i = 0; i < scene->num_lights(); i++)
-	{
-		const SphereLight& light = scene->get_lights()[i];
-		Vector3 light_dir = normalize(light.position - intersect_pos);
 
-		//is this light blocked ?
-		Ray shadow_ray(intersect_pos, light_dir);
-		Intersection shadow_intersection;
-		float t_max = dot(light.position - shadow_ray.e, light_dir);
-		if (!raytracer->shoot_ray(shadow_ray, shadow_intersection, t_max))
-		{
-			//calculate the attenuation
-			Color3 light_color_at_d = light.compute_light_color_at_d(t_max);
-
- 			ret += light.color * material->diffuse * std::max((real_t)0, dot(intersect_normal, light_dir)); // diffuse		
-		}				
-	}
+	ret += compute_diffuse_color(raytracer, intersection, material->diffuse);
 
 	return ret;
 }
