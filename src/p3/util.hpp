@@ -12,7 +12,7 @@
 namespace _462 {
 
 // max number of threads OpenMP can use. Change this if you like. (Hint: set to 1 for debugging)
-#define MAX_THREADS 1
+#define MAX_THREADS 4
     
 //maximum depth of the recursive (sampling) tracing
 #define MAX_DEPTH 10
@@ -35,7 +35,17 @@ namespace _462 {
 #define DIRECT_SAMPLE_COUNT 10
 
 real_t computeFresnelCoefficient(Intersection &next,Ray &ray,real_t index,real_t newIndex);
-Vector3 reflect(Vector3 norm,Vector3 inc);
+
+/**
+* For a given incident vector I and surface normal N reflect returns the reflection direction calculated as I - 2.0 * dot(N, I) * N.
+* N should be normalized in order to achieve the desired result.
+*/
+inline Vector3 reflect(const Vector3& incident, const Vector3& normal)
+{
+	return incident - (normal * 2.0f * dot(normal, incident));
+}
+
+
 Vector3 refract(Vector3 norm,Vector3 inc,real_t ratio);
 real_t montecarlo(Color3& light);
 

@@ -93,4 +93,9 @@ Color3 Model::get_diffuse_color(const Intersection& intersection) const
 	return material->diffuse;
 }
 
+Color3 Model::get_specular_color(const Intersection& intersection) const
+{
+	return material->specular;
+}
+
 } /* _462 */

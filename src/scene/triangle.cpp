@@ -162,4 +162,9 @@ Color3 Triangle::get_diffuse_color(const Intersection& intersection) const
 	return interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->diffuse, vertices[1].material->diffuse, vertices[2].material->diffuse);
 }
 
+Color3 Triangle::get_specular_color(const Intersection& intersection) const
+{
+	return interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->specular, vertices[1].material->specular, vertices[2].material->specular);
+}
+
 } /* _462 */

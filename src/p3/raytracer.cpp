@@ -106,6 +106,11 @@ Color3 Raytracer::trace_ray(const Ray& ray, int depth)
 
 			ret += color / DIRECT_SAMPLE_COUNT;
 		}
+		
+		if (depth - 1 >= 0)
+		{
+			ret += intersection.geometry->get_specular_color(intersection) * trace_ray(Ray(intersection.position, normalize(reflect(ray.d, intersection.normal))), depth - 1);
+		}		
 
 		return ret;
 	}

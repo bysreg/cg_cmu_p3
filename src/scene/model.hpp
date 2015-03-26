@@ -35,6 +35,8 @@ public:
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const;
 	virtual Color3 get_ambient_color(const Intersection& intersection) const;
 	virtual Color3 get_diffuse_color(const Intersection& intersection) const;
+	virtual Color3 get_specular_color(const Intersection& intersection) const;
+
 };
 
 
