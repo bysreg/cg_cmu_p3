@@ -134,12 +134,11 @@ real_t solve_time(real_t a,real_t b,real_t c){
 
 bool Sphere::is_intersect_with_ray(const Ray& ray, Intersection& intersection) const
 {
-	Vector3 e = invMat.transform_point(ray.e);
-	Vector3 d = invMat.transform_vector(ray.d);	
+	Ray local_ray(invMat.transform_point(ray.e), invMat.transform_vector(ray.d));	
 
-	Vector3 e_min_c = e/* - position*/; // no need to substract with position, because we test the intersection in local space
-	real_t B = 2*dot(d, e_min_c);
-	real_t A = dot(d, d);
+	Vector3 e_min_c = local_ray.e/* - position*/; // no need to substract with position, because we test the intersection in local space
+	real_t B = 2*dot(local_ray.d, e_min_c);
+	real_t A = dot(local_ray.d, local_ray.d);
 	real_t C = dot(e_min_c, e_min_c) - (radius * radius);
 
 	float determinant = (B*B - (4 * A*C));
@@ -153,18 +152,18 @@ bool Sphere::is_intersect_with_ray(const Ray& ray, Intersection& intersection) c
 
 	if (t > EPS && t < intersection.t)
 	{
-		update_intersection(ray, t, intersection);
+		update_intersection(local_ray, t, intersection);
 		return true;
 	}
 
 	return false;
 }
 
-void Sphere::update_intersection(const Ray& ray, float t, Intersection& intersection) const
+void Sphere::update_intersection(const Ray& local_ray, float t, Intersection& intersection) const
 {
-	intersection.t = t;
-	intersection.position = ray.at_time(t);
-	intersection.normal = normalize(intersection.position - position);
+	intersection.t = t;	
+	intersection.position = mat.transform_point(local_ray.at_time(t));
+	intersection.normal = normMat * normalize(local_ray.at_time(t));
 	intersection.geometry = this;
 }
 
