@@ -163,7 +163,7 @@ void Sphere::update_intersection(const Ray& local_ray, float t, Intersection& in
 {
 	intersection.t = t;	
 	intersection.position = mat.transform_point(local_ray.at_time(t));
-	intersection.normal = normMat * normalize(local_ray.at_time(t));
+	intersection.normal = normalize(normMat * normalize(local_ray.at_time(t)));
 	intersection.geometry = this;
 }
 

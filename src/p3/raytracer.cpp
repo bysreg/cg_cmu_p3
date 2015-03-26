@@ -107,9 +107,12 @@ Color3 Raytracer::trace_ray(const Ray& ray, int depth)
 			ret += color / DIRECT_SAMPLE_COUNT;
 		}
 		
-		if (depth - 1 >= 0)
+		Color3 specular_color = intersection.geometry->get_specular_color(intersection);
+
+		if (depth - 1 >= 0 && specular_color != Color3::Black())
 		{
-			ret += intersection.geometry->get_specular_color(intersection) * trace_ray(Ray(intersection.position, normalize(reflect(ray.d, intersection.normal))), depth - 1);
+			Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
+			ret += specular_color * trace_ray(reflection_ray, depth - 1);
 		}		
 
 		return ret;
@@ -152,11 +155,7 @@ Color3 Raytracer::trace_pixel(size_t x,
 
         Ray r = Ray(scene->camera.get_position(), projector.get_pixel_dir(i, j));
     
-        res += trace_ray(r);
-        // TODO return the color of the given pixel
-        // you don't have to use this stub function if you prefer to
-        // write your own version of Raytracer::raytrace.
-
+        res += trace_ray(r);        
     }
     return res*(real_t(1)/num_samples);
 }
