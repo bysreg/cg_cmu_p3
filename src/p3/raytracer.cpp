@@ -24,6 +24,7 @@ namespace _462 {
 		scene = 0;
 		width = 0;
 		height = 0;
+		dof_active = false;
 	}
 
 	Raytracer::~Raytracer() { }
@@ -50,6 +51,25 @@ namespace _462 {
 		projector.init(scene->camera);
 		scene->initialize();
 		photonMap.initialize(scene);
+		return true;
+	}
+
+	bool Raytracer::initialize(Scene* scene, size_t num_samples,
+		size_t width, size_t height, Options opt)
+	{
+		if (!initialize(scene, num_samples, width, height))
+		{
+			return false;
+		}
+
+		if (opt.dof_active)
+		{
+			dof_active = true;
+			dof_aperture_size = opt.dof_aperture_size;
+			dof_focal_length = opt.dof_focal_length;
+			dof_number_of_rays = opt.dof_number_of_rays;
+		}
+
 		return true;
 	}
 
@@ -218,6 +238,9 @@ namespace _462 {
 		unsigned int iter;
 		for (iter = 0; iter < num_samples; iter++)
 		{
+				
+
+
 			// pick a point within the pixel boundaries to fire our
 			// ray through.
 			real_t i = real_t(2)*(real_t(x) + random_uniform())*dx - real_t(1);

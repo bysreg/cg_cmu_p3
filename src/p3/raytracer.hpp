@@ -11,6 +11,7 @@
 #ifndef _462_RAYTRACER_HPP_
 #define _462_RAYTRACER_HPP_
 
+#include "application/options.hpp"
 #include "math/color.hpp"
 #include "math/random462.hpp"
 #include "p3/photon.hpp"
@@ -36,6 +37,9 @@ public:
     bool initialize(Scene* scene, size_t num_samples,
                     size_t width, size_t height);
 
+	bool initialize(Scene* scene, size_t num_samples,
+					size_t width, size_t height, Options opt);
+
 	bool shoot_ray(const Ray& ray, Intersection& intersection, float t_max);
     Color3 trace_ray(const Ray &ray);
 	Color3 trace_ray(const Ray& ray, int depth);
@@ -46,6 +50,12 @@ public:
                size_t y,
                size_t width,
                size_t height);
+
+	//dof parameters
+	bool dof_active;
+	int dof_aperture_size;
+	float dof_focal_length;
+	int dof_number_of_rays;
 
 private:
     // the scene to trace

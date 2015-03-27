@@ -5,7 +5,7 @@
  * @author Eric Butler (edbutler)
  */
 
-
+#include "application/options.hpp"
 #include "application/application.hpp"
 #include "application/camera_roam.hpp"
 #include "application/imageio.hpp"
@@ -46,21 +46,6 @@ static const size_t NUM_GL_LIGHTS = 8;
 
 // renders a scene using opengl
 
-/**
- * Struct of the program options.
- */
-struct Options
-{
-    // whether to open a window or just render without one
-    bool open_window;
-    // not allocated, pointed it to something static
-    const char* input_filename;
-    // not allocated, pointed it to something static
-    const char* output_filename;
-    // window dimensions
-    int width, height;
-    int num_samples;
-};
 
 class RaytracerApplication : public Application
 {
@@ -524,9 +509,17 @@ static bool parse_args( Options* opt, int argc, char* argv[] )
             if (i < argc - 1)
                 opt->num_samples = atoi(argv[++i]);
             break;
-        case 'o':
+		case 'f':
+			if (i + 2 >= argc) return false;
+			opt->dof_active = true;
+			opt->dof_aperture_size = atoi(argv[++i]);
+			opt->dof_focal_length = atof(argv[++i]);
+			opt->dof_number_of_rays = atoi(argv[++i]);
+			break;
+		case 'o':
             if (i < argc - 1)
                 opt->output_filename = argv[++i];
+			break;
         }
     }
 
