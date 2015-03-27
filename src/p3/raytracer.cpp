@@ -111,7 +111,7 @@ namespace _462 {
 							total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 						}
 
-						return /*total_shadow_color + */total_specular_color; // no ambient color if there is refraction // fixme
+						return total_specular_color; // no ambient color if there is refraction // fixme
 					}
 				}
 
@@ -131,19 +131,19 @@ namespace _462 {
 						total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 					}
 #if USE_RAND
-					return  /*total_shadow_color + */(R * total_specular_color); // no ambient color if there is refraction
+					return  (R * total_specular_color); // no ambient color if there is refraction
 				}
 				else
 				{
 #endif
 					Ray refraction_ray(intersection.position, refraction_dir);
 #if USE_RAND
-					return  /*total_shadow_color + */((1 - R) * trace_ray(refraction_ray, depth - 1)); // no ambient color if there is refraction
+					return  ((1 - R) * trace_ray(refraction_ray, depth - 1)); // no ambient color if there is refraction
 				}
 #endif
 
 #if !USE_RAND
-				return /*total_shadow_color + */((1 - R) * trace_ray(refraction_ray, depth - 1)) + (R * total_specular_color); // no ambient color if there is refraction
+				return ((1 - R) * trace_ray(refraction_ray, depth - 1)) + (R * total_specular_color); // no ambient color if there is refraction
 #endif
 			}
 			else
