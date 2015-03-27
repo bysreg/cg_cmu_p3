@@ -76,38 +76,8 @@ namespace _462 {
 		Intersection intersection;		
 
 		if (shoot_ray(ray, intersection, std::numeric_limits<float>::max()))
-		{
-			Color3 total_shadow_color;
+		{			
 			Color3 diffuse_color = intersection.geometry->get_diffuse_color(intersection);
-
-			for (int i = 0; i < scene->num_lights(); i++)
-			{
-				Color3 color;
-				const SphereLight& light = scene->get_lights()[i];
-
-				//is this light blocked ?
-				for (int j = 0; j < DIRECT_SAMPLE_COUNT; j++)
-				{
-					Vector3 light_pos(random_gaussian(), random_gaussian(), random_gaussian());
-					light_pos = (normalize(light_pos) * light.radius) + light.position;
-					Vector3 light_dir = normalize(light_pos - intersection.position);
-
-					Ray shadow_ray(intersection.position, light_dir);
-					Intersection shadow_intersection;
-					float t_max = dot(light_pos - shadow_ray.e, light_dir);
-					if (!shoot_ray(shadow_ray, shadow_intersection, t_max))
-					{
-						//calculate the attenuation
-						Color3 light_color_at_d = light.compute_light_color_at_d(t_max);
-
-						color += light_color_at_d * diffuse_color * std::max((real_t)0, dot(intersection.normal, light_dir)); // diffuse		
-					}
-				}
-
-				total_shadow_color += color;
-			}
-
-			total_shadow_color = total_shadow_color / DIRECT_SAMPLE_COUNT;
 
 			Color3 geom_specular_color = intersection.geometry->get_specular_color(intersection);
 			real_t geom_refractive_index = intersection.geometry->get_refractive_index(intersection);
@@ -179,6 +149,36 @@ namespace _462 {
 			else
 			{
 				Color3 total_specular_color;
+				Color3 total_shadow_color;
+				for (int i = 0; i < scene->num_lights(); i++)
+				{
+					Color3 color;
+					const SphereLight& light = scene->get_lights()[i];
+
+					//is this light blocked ?
+					for (int j = 0; j < DIRECT_SAMPLE_COUNT; j++)
+					{
+						Vector3 light_pos(random_gaussian(), random_gaussian(), random_gaussian());
+						light_pos = (normalize(light_pos) * light.radius) + light.position;
+						Vector3 light_dir = normalize(light_pos - intersection.position);
+
+						Ray shadow_ray(intersection.position, light_dir);
+						Intersection shadow_intersection;
+						float t_max = dot(light_pos - shadow_ray.e, light_dir);
+						if (!shoot_ray(shadow_ray, shadow_intersection, t_max))
+						{
+							//calculate the attenuation
+							Color3 light_color_at_d = light.compute_light_color_at_d(t_max);
+
+							color += light_color_at_d * diffuse_color * std::max((real_t)0, dot(intersection.normal, light_dir)); // diffuse		
+						}
+					}
+
+					total_shadow_color += color;
+				}
+
+				total_shadow_color = total_shadow_color / DIRECT_SAMPLE_COUNT;
+
 				if (depth - 1 >= 0 && geom_specular_color != Color3::Black())
 				{
 					Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
