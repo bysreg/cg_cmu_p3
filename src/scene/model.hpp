@@ -37,6 +37,7 @@ public:
 	virtual Color3 get_diffuse_color(const Intersection& intersection) const;
 	virtual Color3 get_specular_color(const Intersection& intersection) const;
 	virtual real_t get_refractive_index(const Intersection& intersection) const;
+	virtual Color3 get_texture_color(const Intersection& intersection) const;
 };
 
 

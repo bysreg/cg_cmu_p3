@@ -187,5 +187,11 @@ real_t Sphere::get_refractive_index(const Intersection& intersection) const
 	return material->refractive_index;
 }
 
+Color3 Sphere::get_texture_color(const Intersection& intersection) const
+{
+	// TODO:unimplemented yet
+	return Color3::White();
+}
+
 } /* _462 */
 

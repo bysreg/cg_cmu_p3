@@ -111,6 +111,7 @@ namespace _462 {
 
 			Color3 geom_specular_color = intersection.geometry->get_specular_color(intersection);
 			real_t geom_refractive_index = intersection.geometry->get_refractive_index(intersection);
+			Color3 geom_texture_color = intersection.geometry->get_texture_color(intersection);
 
 			if (depth - 1 >= 0 && geom_refractive_index > 0)
 			{
@@ -140,7 +141,7 @@ namespace _462 {
 							total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 						}
 
-						return total_shadow_color + total_specular_color; // no ambient color if there is refraction // fixme
+						return geom_texture_color*(total_shadow_color + total_specular_color); // no ambient color if there is refraction // fixme
 					}
 				}
 
@@ -172,7 +173,7 @@ namespace _462 {
 #endif
 
 #if !USE_RAND
-					return total_shadow_color + ((1 - R) * trace_ray(refraction_ray, depth - 1)) + (R * total_specular_color); // no ambient color if there is refraction
+					return geom_texture_color*(total_shadow_color + ((1 - R) * trace_ray(refraction_ray, depth - 1)) + (R * total_specular_color)); // no ambient color if there is refraction
 #endif
 			}
 			else
@@ -183,7 +184,7 @@ namespace _462 {
 					Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
 					total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 				}
-				return total_shadow_color + total_specular_color + (scene->ambient_light * intersection.geometry->get_ambient_color(intersection));
+				return geom_texture_color*(total_shadow_color + total_specular_color + (scene->ambient_light * intersection.geometry->get_ambient_color(intersection)));
 			}
 		}
 		else

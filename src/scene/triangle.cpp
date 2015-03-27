@@ -142,6 +142,7 @@ bool Triangle::is_intersect_with_ray(const Ray& ray, Intersection& intersection)
 		intersection.alpha = alpha;
 		intersection.beta = beta;
 		intersection.gamma = gamma;
+		intersection.tex_coord = alpha * vertices[0].tex_coord + beta * vertices[1].tex_coord + gamma * vertices[2].tex_coord;
 		return true;
 	}
 	return false;
@@ -170,6 +171,22 @@ Color3 Triangle::get_specular_color(const Intersection& intersection) const
 real_t Triangle::get_refractive_index(const Intersection& intersection) const
 {
 	return interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->refractive_index, vertices[1].material->refractive_index, vertices[2].material->refractive_index);
+}
+
+Color3 Triangle::get_texture_color(const Intersection& intersection) const
+{
+	int pix_x[3];
+	int pix_y[3];
+	for (int i = 0; i < 3; i++)
+	{
+		int width, height;
+		vertices[i].material->texture.get_texture_size(&width, &height);
+		pix_x[i] = (int)fmod(width*intersection.tex_coord.x, width);
+		pix_y[i] = (int)fmod(height*intersection.tex_coord.y, height);
+	}
+	
+	Color3 ret = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->texture.get_texture_pixel(pix_x[0], pix_y[0]), vertices[1].material->texture.get_texture_pixel(pix_x[1], pix_y[1]), vertices[2].material->texture.get_texture_pixel(pix_x[2], pix_y[2]));
+	return ret;
 }
 
 } /* _462 */

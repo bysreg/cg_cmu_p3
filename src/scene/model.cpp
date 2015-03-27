@@ -76,6 +76,7 @@ bool Model::is_intersect_with_ray(const Ray& ray, Intersection& intersection) co
 			intersection.normal = alpha * world_normals[mesh->triangles[i].vertices[0]] + beta * world_normals[mesh->triangles[i].vertices[1]] + gamma * world_normals[mesh->triangles[i].vertices[2]];
 			intersection.position = ray.at_time(intersection.t);
 			intersection.geometry = this;
+			intersection.tex_coord = alpha * mesh->vertices[mesh->triangles[i].vertices[0]].tex_coord + beta * mesh->vertices[mesh->triangles[i].vertices[1]].tex_coord + gamma * mesh->vertices[mesh->triangles[i].vertices[2]].tex_coord;
 			found = true;
 		}		
 	}
@@ -101,6 +102,16 @@ Color3 Model::get_specular_color(const Intersection& intersection) const
 real_t Model::get_refractive_index(const Intersection& intersection) const
 {
 	return material->refractive_index;
+}
+
+Color3 Model::get_texture_color(const Intersection& intersection) const
+{
+	int width, height;
+	material->texture.get_texture_size(&width, &height);
+	int pix_x = (int)fmod(width*intersection.tex_coord.x, width);
+	int pix_y = (int)fmod(height*intersection.tex_coord.y, height);
+
+	return material->texture.get_texture_pixel(pix_x, pix_y);
 }
 
 } /* _462 */

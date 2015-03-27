@@ -31,11 +31,13 @@ struct Intersection{
 	Vector3 normal;
 	Vector3 position; // world coordinate
 	const Geometry* geometry;
-	
+	Vector2 tex_coord;
+
 	//only valid on triangle
 	float alpha;
 	float beta;
 	float gamma;
+	
 
 	Intersection() : geometry(nullptr) {}
 };
@@ -86,6 +88,7 @@ public:
 	virtual Color3 get_diffuse_color(const Intersection& intersection) const = 0;
 	virtual Color3 get_specular_color(const Intersection& intersection) const = 0;
 	virtual real_t get_refractive_index(const Intersection& intersection) const = 0;
+	virtual Color3 get_texture_color(const Intersection& intersection) const = 0;
 };
 
 
