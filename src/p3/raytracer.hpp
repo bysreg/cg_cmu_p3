@@ -41,6 +41,8 @@ public:
 					size_t width, size_t height, Options opt);
 
 	bool shoot_ray(const Ray& ray, Intersection& intersection, float t_max);
+	bool shoot_ray_test(const Ray& ray, Intersection& intersection, float t_max); // quick test for intersection. will return the first moment it found an intersection (good for shadow rays)
+
     Color3 trace_ray(const Ray &ray);
 	Color3 trace_ray(const Ray& ray, int depth);
     

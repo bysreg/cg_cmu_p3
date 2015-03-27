@@ -76,7 +76,6 @@ namespace _462 {
 	bool Raytracer::shoot_ray(const Ray& ray, Intersection& intersection, float t_max)
 	{
 		Geometry* const* geometries = scene->get_geometries();
-		bool ret = false;
 		intersection.t = t_max;
 		for (size_t i = 0; i < scene->num_geometries(); ++i)
 		{
@@ -84,6 +83,19 @@ namespace _462 {
 		}
 
 		return intersection.geometry != nullptr;
+	}
+
+	bool Raytracer::shoot_ray_test(const Ray& ray, Intersection& intersection, float t_max)
+	{
+		Geometry* const* geometries = scene->get_geometries();		
+		intersection.t = t_max;
+		for (size_t i = 0; i < scene->num_geometries(); ++i)
+		{
+			if (geometries[i]->is_intersect_with_ray(ray, intersection))
+				return true;
+		}
+
+		return false;
 	}
 
 	Color3 Raytracer::trace_ray(const Ray &ray){
@@ -184,7 +196,7 @@ namespace _462 {
 						Ray shadow_ray(intersection.position, light_dir);
 						Intersection shadow_intersection;
 						float t_max = dot(light_pos - shadow_ray.e, light_dir);
-						if (!shoot_ray(shadow_ray, shadow_intersection, t_max))
+						if (!shoot_ray_test(shadow_ray, shadow_intersection, t_max)) // quick test for intersection, no need to iterate over all geometries
 						{
 							//calculate the attenuation
 							Color3 light_color_at_d = light.compute_light_color_at_d(t_max);
