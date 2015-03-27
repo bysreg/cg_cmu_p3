@@ -189,8 +189,17 @@ real_t Sphere::get_refractive_index(const Intersection& intersection) const
 
 Color3 Sphere::get_texture_color(const Intersection& intersection) const
 {
-	// TODO:unimplemented yet
-	return Color3::White();
+	//convert to local space
+	Vector3 local_inter_pos = invMat.transform_point(intersection.position);
+	real_t theta = std::acosf(local_inter_pos.y / radius);
+	real_t phi = std::atan2(local_inter_pos.x, local_inter_pos.z);
+	real_t u = phi / (2 * PI);
+	real_t v = (PI - theta) / PI;
+	int width;
+	int height;
+	material->texture.get_texture_size(&width, &height);
+
+	return material->texture.get_texture_pixel(u * width, v * height);
 }
 
 } /* _462 */
