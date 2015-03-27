@@ -19,7 +19,7 @@ namespace _462 {
 #endif
     
 //maximum depth of the recursive (sampling) tracing
-#define MAX_DEPTH 3
+#define MAX_DEPTH 10
     
 //increase lighting by a factor
 #define WATT_BOOST 10.0
