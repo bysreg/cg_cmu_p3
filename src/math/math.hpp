@@ -39,7 +39,7 @@ class Color3;
 // since the standard library happily does not provide one
 #define PI 3.141592653589793238
 // A small positive real number. Will be useful in ray casting.
-#define EPS .0001
+#define EPS .001
 
 template<typename T>
 inline T clamp( T val, T min, T max )
