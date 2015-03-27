@@ -66,8 +66,7 @@ namespace _462 {
 		{
 			dof_active = true;
 			dof_aperture_size = opt.dof_aperture_size;
-			dof_focal_length = opt.dof_focal_length;
-			dof_number_of_rays = opt.dof_number_of_rays;
+			dof_focal_length = opt.dof_focal_length;			
 		}
 
 		return true;
@@ -238,15 +237,25 @@ namespace _462 {
 		unsigned int iter;
 		for (iter = 0; iter < num_samples; iter++)
 		{
-				
-
-
 			// pick a point within the pixel boundaries to fire our
 			// ray through.
 			real_t i = real_t(2)*(real_t(x) + random_uniform())*dx - real_t(1);
 			real_t j = real_t(2)*(real_t(y) + random_uniform())*dy - real_t(1);
 
-			Ray r = Ray(scene->camera.get_position(), projector.get_pixel_dir(i, j));
+			Ray r;
+
+			if (dof_active)
+			{
+				Vector3 pos = scene->camera.get_position() + scene->camera.get_direction() * scene->camera.near_clip;
+				pos = pos + random_uniform(-dof_aperture_size * 0.5f, dof_aperture_size * 0.5f) *  scene->camera.get_right() + random_uniform(-dof_aperture_size * 0.5f, dof_aperture_size * 0.5f) * scene->camera.get_up();
+				Vector3 pix_dir = projector.get_pixel_dir(i, j);
+				Vector3 focal_point = pos + ((pix_dir * dof_focal_length * (scene->camera.get_near_clip() + dof_focal_length))/ scene->camera.get_near_clip());
+				r = Ray(pos, normalize(focal_point - pos));
+			}
+			else
+			{
+				r = Ray(scene->camera.get_position(), projector.get_pixel_dir(i, j));
+			}			
 
 			res += trace_ray(r);
 		}

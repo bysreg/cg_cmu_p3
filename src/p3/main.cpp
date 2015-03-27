@@ -245,7 +245,7 @@ void RaytracerApplication::handle_event( const SDL_Event& event )
             toggle_raytracing( width, height );
             break;
         case KEY_SEND_PHOTONS:
-            raytracer.initialize(&scene, options.num_samples, 0, 0);
+            raytracer.initialize(&scene, options.num_samples, 0, 0, options);
             queue_render_photon=true;
             
         case KEY_SCREENSHOT:
@@ -282,7 +282,7 @@ void RaytracerApplication::toggle_raytracing( int width, int height )
         // initialize the raytracer (first make sure camera aspect is correct)
         scene.camera.aspect = real_t( width ) / real_t( height );
 
-        if (!raytracer.initialize(&scene, options.num_samples, width, height))
+        if (!raytracer.initialize(&scene, options.num_samples, width, height, options))
     {
             std::cout << "Raytracer initialization failed.\n";
             return; // leave untoggled since initialization failed.
@@ -487,6 +487,7 @@ static bool parse_args( Options* opt, int argc, char* argv[] )
     opt->width = DEFAULT_WIDTH;
     opt->height = DEFAULT_HEIGHT;
     opt->num_samples = 1;
+	opt->dof_active = false;
     for (int i = 2; i < argc; i++)
     {
         switch (argv[i][1])
@@ -512,9 +513,8 @@ static bool parse_args( Options* opt, int argc, char* argv[] )
 		case 'f':
 			if (i + 2 >= argc) return false;
 			opt->dof_active = true;
-			opt->dof_aperture_size = atoi(argv[++i]);
-			opt->dof_focal_length = atof(argv[++i]);
-			opt->dof_number_of_rays = atoi(argv[++i]);
+			opt->dof_aperture_size = atof(argv[++i]);
+			opt->dof_focal_length = atof(argv[++i]);			
 			break;
 		case 'o':
             if (i < argc - 1)

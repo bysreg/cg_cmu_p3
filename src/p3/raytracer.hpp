@@ -53,9 +53,8 @@ public:
 
 	//dof parameters
 	bool dof_active;
-	int dof_aperture_size;
-	float dof_focal_length;
-	int dof_number_of_rays;
+	float dof_aperture_size;
+	float dof_focal_length;	
 
 private:
     // the scene to trace

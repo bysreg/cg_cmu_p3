@@ -27,4 +27,6 @@ real_t random_gaussian();
      */
 int random_int(int n);
 
+real_t random_uniform(real_t min, real_t max);
+
 }; // _462
