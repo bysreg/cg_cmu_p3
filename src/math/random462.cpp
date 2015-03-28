@@ -55,6 +55,7 @@ real_t random_gaussian()
     return dist(*generator);
 }
 
+//random [min, max]
 real_t random_uniform(real_t min, real_t max)
 {
 	if (min == max)

@@ -25,6 +25,7 @@ namespace _462 {
 		width = 0;
 		height = 0;
 		dof_active = false;
+		glossy_active = false;
 	}
 
 	Raytracer::~Raytracer() { }
@@ -136,6 +137,28 @@ namespace _462 {
 		v = cross(w, u);
 	}
 
+	Ray Raytracer::generate_reflection_ray(Vector3 pos, Vector3 incoming, Vector3 surface_normal)
+	{
+		Vector3 normal_reflection_dir = normalize(reflect(incoming, surface_normal));
+		Ray normal_reflection_ray(pos, normal_reflection_dir);
+
+		if (!glossy_active)
+		{
+			return normal_reflection_ray;
+		}
+		else
+		{
+			real_t r1 = random_uniform(0, 1);
+			real_t r2 = random_uniform(0, 1);
+			Vector3 u, v, w;
+			create_basis(normal_reflection_dir, u, v, w);
+			real_t u_val = (-glossy_surface_width * 0.5f) + r1 * glossy_surface_width;
+			real_t v_val = (-glossy_surface_width * 0.5f) + r2 * glossy_surface_width;
+			
+			return Ray(pos, normalize(normal_reflection_dir + u*u_val + v*v_val));
+		}
+	}
+
 	Color3 Raytracer::trace_ray(const Ray& ray, int depth)
 	{
 		Intersection intersection;		
@@ -173,7 +196,8 @@ namespace _462 {
 						Color3 total_specular_color;
 						if (depth - 1 >= 0 && geom_specular_color != Color3::Black())
 						{
-							Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
+							//Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
+							Ray reflection_ray = generate_reflection_ray(intersection.position, ray.d, intersection.normal);
 							total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 						}
 
@@ -193,7 +217,8 @@ namespace _462 {
 					Color3 total_specular_color;
 					if (depth - 1 >= 0 && geom_specular_color != Color3::Black())
 					{
-						Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
+						//Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
+						Ray reflection_ray = generate_reflection_ray(intersection.position, ray.d, intersection.normal);
 						total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 					}
 #if USE_RAND
@@ -247,7 +272,8 @@ namespace _462 {
 
 				if (depth - 1 >= 0 && geom_specular_color != Color3::Black())
 				{
-					Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
+					//Ray reflection_ray(intersection.position, normalize(reflect(ray.d, intersection.normal)));
+					Ray reflection_ray = generate_reflection_ray(intersection.position, ray.d, intersection.normal);
 					total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 				}
 				return geom_texture_color*(total_shadow_color + total_specular_color + (scene->ambient_light * intersection.geometry->get_ambient_color(intersection)));

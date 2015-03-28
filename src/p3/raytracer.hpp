@@ -48,6 +48,8 @@ public:
     
     bool raytrace(unsigned char* buffer, real_t* max_time);
     
+	Ray generate_reflection_ray(Vector3 pos, Vector3 incoming, Vector3 surface_normal);
+
     Color3 trace_pixel(size_t x,
                size_t y,
                size_t width,
