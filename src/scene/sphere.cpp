@@ -200,7 +200,7 @@ Color3 Sphere::get_texture_color(const Intersection& intersection) const
 {
 	//convert to local space
 	Vector3 local_inter_pos = invMat.transform_point(intersection.position);
-	real_t theta = std::acosf(local_inter_pos.y / radius);
+	real_t theta = std::acos(local_inter_pos.y / radius);
 	real_t phi = std::atan2(local_inter_pos.x, local_inter_pos.z);
 	real_t u = phi / (2 * PI);
 	real_t v = (PI - theta) / PI;
@@ -215,7 +215,7 @@ Color3 Sphere::get_bump_color(const Intersection& intersection) const
 {
 	//convert to local space
 	Vector3 local_inter_pos = invMat.transform_point(intersection.position);
-	real_t theta = std::acosf(local_inter_pos.y / radius);
+	real_t theta = std::acos(local_inter_pos.y / radius);
 	real_t phi = std::atan2(local_inter_pos.x, local_inter_pos.z);
 	real_t u = phi / (2 * PI);
 	real_t v = (PI - theta) / PI;
