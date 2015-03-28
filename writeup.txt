@@ -1,0 +1,22 @@
+I implemented these functions :
+- raytracer
+- intersection tests for sphere, model, and triangle
+- properly handle arbitrary scaling and rotation, and translation geometries
+- eye rays
+- direct illumination and shadows
+- specular reflections
+- refractions
+- colors computation
+- soft shadows
+- correctly render the scenes in the scenes directory
+- for the fresnel effect, there is an option to only select one out of two rays, relection or refraction, to trace. namely, USE_RAND preprocessor. 
+
+I also implemented these extra marks : 
+- depth of field
+- glossy reflections
+
+how to turn on depth of field : -f <apperture_size> <focal_length>
+how to turn on glossy reflections : -g <glossy_surface_width>
+
+the major part of the code's implementation are located in raytracer.cpp, Geometry class and all the Geometry child's classes. 
+ 
