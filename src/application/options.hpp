@@ -23,6 +23,7 @@ namespace _462 {
 		//-----
 
 		//for glossy field 
+		bool glossy_active;
 		float glossy_surface_width;
 		//------
 	};

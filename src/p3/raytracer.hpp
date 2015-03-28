@@ -58,6 +58,10 @@ public:
 	float dof_aperture_size;
 	float dof_focal_length;	
 
+	//glossy
+	bool glossy_active;
+	float glossy_surface_width;
+
 private:
     // the scene to trace
     Scene* scene;

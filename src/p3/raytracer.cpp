@@ -66,7 +66,13 @@ namespace _462 {
 		{
 			dof_active = true;
 			dof_aperture_size = opt.dof_aperture_size;
-			dof_focal_length = opt.dof_focal_length;			
+			dof_focal_length = opt.dof_focal_length;
+		}
+
+		if (opt.glossy_active)
+		{
+			glossy_active = true;
+			glossy_surface_width = opt.glossy_surface_width;
 		}
 
 		return true;
@@ -87,7 +93,7 @@ namespace _462 {
 
 	bool Raytracer::shoot_ray_test(const Ray& ray, Intersection& intersection, float t_max)
 	{
-		Geometry* const* geometries = scene->get_geometries();		
+		Geometry* const* geometries = scene->get_geometries();
 		intersection.t = t_max;
 		for (size_t i = 0; i < scene->num_geometries(); ++i)
 		{
@@ -104,8 +110,31 @@ namespace _462 {
 
 	/*Vector3 convert_color_to_vector(Color3 color)
 	{
-		return Vector3(color3.)
+	return Vector3(color3.)
 	}*/
+
+	void create_basis(Vector3 dir, Vector3& u, Vector3& v, Vector3& w)
+	{
+		w = dir / length(dir);
+		Vector3 t = w;
+		real_t smallest = std::numeric_limits<real_t>::max();
+		int index = 0;
+
+		for (int i = 0; i < 3; i++)
+		{
+			if (smallest > std::abs(t[i]))
+			{
+				smallest = std::abs(t[i]);
+				index = i;
+			}			
+		}
+
+		t[index] = 1;
+
+		u = cross(t, w) / length(cross(t, w));
+
+		v = cross(w, u);
+	}
 
 	Color3 Raytracer::trace_ray(const Ray& ray, int depth)
 	{

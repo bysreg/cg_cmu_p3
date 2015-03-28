@@ -488,6 +488,7 @@ static bool parse_args( Options* opt, int argc, char* argv[] )
     opt->height = DEFAULT_HEIGHT;
     opt->num_samples = 1;
 	opt->dof_active = false;
+	opt->glossy_active = false;
     for (int i = 2; i < argc; i++)
     {
         switch (argv[i][1])
@@ -519,6 +520,13 @@ static bool parse_args( Options* opt, int argc, char* argv[] )
 		case 'o':
             if (i < argc - 1)
                 opt->output_filename = argv[++i];
+			break;
+		case 'g' :
+			if (i < argc - 1)
+			{
+				opt->glossy_active = true;
+				opt->glossy_surface_width = atof(argv[++i]);
+			}				
 			break;
         }
     }
