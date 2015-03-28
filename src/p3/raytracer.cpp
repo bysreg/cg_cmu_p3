@@ -102,6 +102,11 @@ namespace _462 {
 		return trace_ray(ray, MAX_DEPTH);
 	}
 
+	/*Vector3 convert_color_to_vector(Color3 color)
+	{
+		return Vector3(color3.)
+	}*/
+
 	Color3 Raytracer::trace_ray(const Ray& ray, int depth)
 	{
 		Intersection intersection;		
@@ -113,6 +118,7 @@ namespace _462 {
 			Color3 geom_specular_color = intersection.geometry->get_specular_color(intersection);
 			real_t geom_refractive_index = intersection.geometry->get_refractive_index(intersection);
 			Color3 geom_texture_color = intersection.geometry->get_texture_color(intersection);
+			//Vector3 geom_surface_normal = intersection.geometry->has_bump_map == false ? intersection.normal : intersection.geometry->get_bump_color(intersection).;
 
 			if (depth - 1 >= 0 && geom_refractive_index > 0)
 			{
@@ -142,7 +148,7 @@ namespace _462 {
 							total_specular_color += geom_specular_color * trace_ray(reflection_ray, depth - 1);
 						}
 
-						return total_specular_color; // no ambient color if there is refraction // fixme
+						return total_specular_color; // no ambient color if there is refraction
 					}
 				}
 
@@ -259,7 +265,7 @@ namespace _462 {
 			if (dof_active)
 			{
 				Vector3 pos = scene->camera.get_position() + scene->camera.get_direction() * scene->camera.near_clip;
-				pos = pos + random_uniform(-dof_aperture_size * 0.5f, dof_aperture_size * 0.5f) *  scene->camera.get_right() + random_uniform(-dof_aperture_size * 0.5f, dof_aperture_size * 0.5f) * scene->camera.get_up();
+				pos = pos + random_uniform(-dof_aperture_size, dof_aperture_size) *  scene->camera.get_right() + random_uniform(-dof_aperture_size, dof_aperture_size) * scene->camera.get_up();
 				Vector3 pix_dir = projector.get_pixel_dir(i, j);
 				Vector3 focal_point = pos + ((pix_dir * dof_focal_length * (scene->camera.get_near_clip() + dof_focal_length))/ scene->camera.get_near_clip());
 				r = Ray(pos, normalize(focal_point - pos));

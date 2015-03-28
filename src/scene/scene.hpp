@@ -75,6 +75,8 @@ public:
     Matrix3 normMat;
     bool isBig;
 
+	bool has_bump_map;
+
     /**
      * Renders this geometry using OpenGL in the local coordinate space.
      */
@@ -89,6 +91,7 @@ public:
 	virtual Color3 get_specular_color(const Intersection& intersection) const = 0;
 	virtual real_t get_refractive_index(const Intersection& intersection) const = 0;
 	virtual Color3 get_texture_color(const Intersection& intersection) const = 0;
+	virtual Color3 get_bump_color(const Intersection& intersection) const = 0;
 };
 
 

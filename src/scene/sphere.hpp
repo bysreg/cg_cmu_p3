@@ -25,6 +25,7 @@ public:
 
     Sphere();
     virtual ~Sphere();
+	virtual bool initialize();
     virtual void render() const;
 	virtual bool is_intersect_with_ray(const Ray& ray, Intersection& intersection) const;
 	void update_intersection(const Ray& ray, float t, Intersection& intersection) const;
@@ -34,7 +35,7 @@ public:
 	virtual Color3 get_specular_color(const Intersection& intersection) const;
 	virtual real_t get_refractive_index(const Intersection& intersection) const;
 	virtual Color3 get_texture_color(const Intersection& intersection) const;
-
+	virtual Color3 get_bump_color(const Intersection& intersection) const;
 };
 
 } /* _462 */

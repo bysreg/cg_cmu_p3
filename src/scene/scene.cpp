@@ -14,7 +14,8 @@ namespace _462 {
 Geometry::Geometry():
     position(Vector3::Zero()),
     orientation(Quaternion::Identity()),
-    scale(Vector3::Ones())
+    scale(Vector3::Ones()), 
+	has_bump_map(false)
 {
 
 }

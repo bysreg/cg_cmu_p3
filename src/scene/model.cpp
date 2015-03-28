@@ -55,6 +55,8 @@ bool Model::initialize(){
 		}
 	}
 
+	has_bump_map = material->bump.width == 0 ? false : true;
+
     return true;
 }
 
@@ -113,5 +115,16 @@ Color3 Model::get_texture_color(const Intersection& intersection) const
 
 	return material->texture.get_texture_pixel(pix_x, pix_y);
 }
+
+Color3 Model::get_bump_color(const Intersection& intersection) const
+{
+	int width, height;
+	material->bump.get_texture_size(&width, &height);
+	int pix_x = (int)fmod(width*intersection.tex_coord.x, width);
+	int pix_y = (int)fmod(height*intersection.tex_coord.y, height);
+
+	return material->bump.get_texture_pixel(pix_x, pix_y);
+}
+
 
 } /* _462 */

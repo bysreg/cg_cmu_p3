@@ -36,6 +36,16 @@ bool Triangle::initialize()
 		}
 	}
 
+	//if one vertices has a bump map, assume the other two have it too
+	for (int i = 0; i < 3; i++)
+	{
+		if (vertices[i].material->bump.width != 0)
+		{
+			has_bump_map = true;
+			break;
+		}
+	}
+
 	return true;
 }
 
@@ -186,6 +196,22 @@ Color3 Triangle::get_texture_color(const Intersection& intersection) const
 	}
 	
 	Color3 ret = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->texture.get_texture_pixel(pix_x[0], pix_y[0]), vertices[1].material->texture.get_texture_pixel(pix_x[1], pix_y[1]), vertices[2].material->texture.get_texture_pixel(pix_x[2], pix_y[2]));
+	return ret;
+}
+
+Color3 Triangle::get_bump_color(const Intersection& intersection) const
+{
+	int pix_x[3];
+	int pix_y[3];
+	for (int i = 0; i < 3; i++)
+	{
+		int width, height;
+		vertices[i].material->bump.get_texture_size(&width, &height);
+		pix_x[i] = (int)fmod(width*intersection.tex_coord.x, width);
+		pix_y[i] = (int)fmod(height*intersection.tex_coord.y, height);
+	}
+
+	Color3 ret = interpolate_value(intersection.alpha, intersection.beta, intersection.gamma, vertices[0].material->bump.get_texture_pixel(pix_x[0], pix_y[0]), vertices[1].material->bump.get_texture_pixel(pix_x[1], pix_y[1]), vertices[2].material->bump.get_texture_pixel(pix_x[2], pix_y[2]));
 	return ret;
 }
 
