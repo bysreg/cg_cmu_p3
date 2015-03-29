@@ -322,7 +322,7 @@ namespace _462 {
 				Vector3 pos = scene->camera.get_position() + scene->camera.get_direction() * scene->camera.near_clip;
 				pos = pos + random_uniform(-dof_aperture_size, dof_aperture_size) *  scene->camera.get_right() + random_uniform(-dof_aperture_size, dof_aperture_size) * scene->camera.get_up();
 				Vector3 pix_dir = projector.get_pixel_dir(i, j);
-				Vector3 focal_point = pos + ((pix_dir * dof_focal_length * (scene->camera.get_near_clip() + dof_focal_length))/ scene->camera.get_near_clip());
+				Vector3 focal_point = scene->camera.get_position() + pix_dir * dof_focal_length;
 				r = Ray(pos, normalize(focal_point - pos));
 			}
 			else
