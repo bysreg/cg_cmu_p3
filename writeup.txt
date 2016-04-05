@@ -15,7 +15,7 @@ I also implemented these extra marks :
 - depth of field
 - glossy reflections
 
-how to turn on depth of field : -f <apperture_size> <focal_length>
+how to turn on depth of field : -f <apperture_size> <focal_length> => example : ./p3 scenes/cube.scene -f 0.4 12
 how to turn on glossy reflections : -g <glossy_surface_width>
 
 the major part of the code's implementation are located in raytracer.cpp, Geometry class and all the Geometry child's classes. 
